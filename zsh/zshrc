@@ -1,0 +1,9 @@
+eval "$(starship init zsh)"
+eval "$(zoxide init zsh)"
+
+alias ls="eza --icons"
+alias cat="bat"
+alias pip='pip3'
+alias python='python3'
+
+export PATH="$HOME/Library/Python/3.9/bin:$PATH"
