@@ -19,9 +19,23 @@ The script hardcodes `~/subspace/lcars` as the repo location — the repo must l
 
 ## Known issues in install.sh (deferred — install.sh is its own future project)
 
-- Symlinks `tmux/.tmux.conf` and `zsh/.zshrc` (leading dots), but the actual files are `tmux/tmux.conf` and `zsh/zshrc` (no dots). Symlinks resolve to nothing.
-- Doesn't link `starship/starship.toml` → `~/.config/starship.toml`, `bat/config` → `~/.config/bat/config`, `bat/themes/` → `~/.config/bat/themes/`, or `eza/theme.yml` → `~/.config/eza/theme.yml`. These configs exist in the repo but won't take effect until install.sh is rewritten.
+The user's current Mac has working symlinks for everything in the repo, set up by hand — install.sh's gaps haven't bitten them yet. The full link inventory `install.sh` will eventually need:
+
+| Source in repo | Symlink target |
+| --- | --- |
+| `zsh/zshrc` | `~/.zshrc` |
+| `bash/bashrc` | `~/.bashrc` |
+| `tmux/tmux.conf` | `~/.tmux.conf` |
+| `starship/starship.toml` | `~/.config/starship.toml` |
+| `bat/config` | `~/.config/bat/config` |
+| `eza/theme.yml` | `~/.config/eza/theme.yml` |
+| `ghostty/config` | `~/.config/ghostty/config` (XDG path on both macOS and Linux — see Ghostty section) |
+
+Issues in the current `install.sh`:
+- Symlinks `tmux/.tmux.conf` and `zsh/.zshrc` (leading dots) — actual filenames have no dot, so the links resolve to nothing.
+- Misses every config under `~/.config/` (starship, bat, eza, ghostty).
 - No `Brewfile` in the repo root despite `brew bundle` being called.
+- No Linux install path (Brewfile/brew is Mac-only).
 
 ## Runtime dependencies assumed by zshrc
 
@@ -33,9 +47,9 @@ Everything is on the catppuccin **mocha** flavor. When adding tools, keep them o
 
 - **starship**: palette set in `starship/starship.toml`.
 - **tmux**: `catppuccin/tmux` is in the TPM plugin list; `@catppuccin_flavor 'mocha'` is set. After editing the plugin list, run `prefix + I` inside tmux to install.
-- **bat**: theme `Catppuccin Mocha.tmTheme` is vendored under `bat/themes/`. `bat/config` selects it. After symlinking themes into `~/.config/bat/themes/`, run `bat cache --build` once so bat picks up the custom theme.
-- **eza**: `eza/theme.yml` is the **mauve** mocha variant from `catppuccin/eza`, chosen to match starship's git_branch accent. To swap accents, replace the file with another from `catppuccin/eza`'s `themes/mocha/` directory. eza reads it from `~/.config/eza/theme.yml` (requires eza ≥ 0.20).
-- **Ghostty**: `ghostty/config` is vendored. `theme = Catppuccin Mocha` references Ghostty's built-in theme — no theme file needs to be installed (the cloned `~/.config/ghostty/themes/catppuccin/` directory on the user's Mac is leftover and unused; safe to delete). Config locations differ by OS — see "Ghostty config paths" below.
+- **bat**: ships `Catppuccin Mocha` as a built-in theme since v0.25. `bat/config` just sets `--theme="Catppuccin Mocha"` — no theme file vendored. If a future bat version drops the built-in, re-vendor from `catppuccin/bat`.
+- **eza**: `eza/theme.yml` is the **mauve** mocha variant from `catppuccin/eza`, chosen to match starship's git_branch accent. eza has no built-in catppuccin theme, so this file is required. To swap accents, replace it with another from `catppuccin/eza`'s `themes/mocha/` directory. Requires eza ≥ 0.20.
+- **Ghostty**: `theme = Catppuccin Mocha` in `ghostty/config` references Ghostty's built-in theme since v1.0 — no theme file vendored. (The cloned `~/.config/ghostty/themes/catppuccin/` on the user's Mac is leftover and unused; safe to delete.) Config locations differ by OS — see "Ghostty config paths" below.
 
 ## Ghostty config paths
 
