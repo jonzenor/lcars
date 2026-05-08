@@ -6,20 +6,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal dotfiles for zsh, bash, tmux, and starship. The goal is a consistent shell experience across the user's Mac and Linux machines — keep portability in mind when adding tools or install steps. There is no build, no tests, and no application code; every change is a config edit that takes effect on the next shell/tmux reload.
 
-The current `install.sh` is Mac-only (uses `brew bundle`). A Linux install path is a likely future need.
+`install.sh` is currently macOS-only (relies on Homebrew). Linux support is a deferred follow-up.
 
 ## Install flow
 
 `./install.sh` is the only entry point. It:
-1. Runs `brew bundle` (expects a `Brewfile` in the repo root — **not currently checked in**; adding one is a likely future task).
-2. Clones [TPM](https://github.com/tmux-plugins/tpm) to `~/.tmux/plugins/tpm` if missing.
-3. Symlinks configs into `$HOME`.
+1. Verifies Homebrew is installed; exits with brew.sh install instructions if not.
+2. Runs `brew bundle` against the repo's `Brewfile` (starship, zoxide, eza, bat, tmux, ghostty, jetbrains-mono-nerd-font).
+3. Clones [TPM](https://github.com/tmux-plugins/tpm) to `~/.tmux/plugins/tpm` if missing.
+4. Symlinks configs (see inventory below). Existing real files at targets are renamed to `.bak`; existing symlinks are overwritten.
+5. On macOS, renames `~/Library/Application Support/com.mitchellh.ghostty/config.ghostty` to `.bak` if present, so the XDG symlink is authoritative.
+6. Runs `~/.tmux/plugins/tpm/bin/install_plugins` headless so `catppuccin/tmux` is installed without manual `prefix + I`.
 
-The script hardcodes `~/subspace/lcars` as the repo location — the repo must live there for the symlinks to resolve.
+Pass `--update` to refresh: adds `brew upgrade`, `git pull` of TPM, and `update_plugins all` instead of `install_plugins`. Symlinking and config backup behavior is unchanged between modes.
 
-## Known issues in install.sh (deferred — install.sh is its own future project)
+The script uses script-relative paths (`LCARS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"`), so the repo can live anywhere — not hardcoded. It is idempotent: re-running re-points symlinks, guards the TPM clone, and skips already-installed Brew packages. Passes `shellcheck` clean.
 
-The user's current Mac has working symlinks for everything in the repo, set up by hand — install.sh's gaps haven't bitten them yet. The full link inventory `install.sh` will eventually need:
+### Symlink inventory
 
 | Source in repo | Symlink target |
 | --- | --- |
@@ -29,24 +32,14 @@ The user's current Mac has working symlinks for everything in the repo, set up b
 | `starship/starship.toml` | `~/.config/starship.toml` |
 | `bat/config` | `~/.config/bat/config` |
 | `eza/theme.yml` | `~/.config/eza/theme.yml` |
-| `ghostty/config` | `~/.config/ghostty/config` (XDG path on both macOS and Linux — see Ghostty section) |
-
-Issues in the current `install.sh`:
-- Symlinks `tmux/.tmux.conf` and `zsh/.zshrc` (leading dots) — actual filenames have no dot, so the links resolve to nothing.
-- Misses every config under `~/.config/` (starship, bat, eza, ghostty).
-- No `Brewfile` in the repo root despite `brew bundle` being called.
-- No Linux install path (Brewfile/brew is Mac-only).
-
-## Runtime dependencies assumed by zshrc
-
-`zsh/zshrc` aliases and inits assume these are on `PATH`: `starship`, `zoxide`, `eza`, `bat`. They should come from `brew bundle` once a Brewfile exists.
+| `ghostty/config` | `~/.config/ghostty/config` |
 
 ## Theming
 
 Everything is on the catppuccin **mocha** flavor. When adding tools, keep them on mocha for consistency.
 
 - **starship**: palette set in `starship/starship.toml`.
-- **tmux**: `catppuccin/tmux` is in the TPM plugin list; `@catppuccin_flavor 'mocha'` is set. After editing the plugin list, run `prefix + I` inside tmux to install.
+- **tmux**: `catppuccin/tmux` is in the TPM plugin list; `@catppuccin_flavor 'mocha'` is set. `install.sh` invokes TPM's headless `install_plugins` automatically; if you edit the plugin list later outside install.sh, run `prefix + I` inside tmux.
 - **bat**: ships `Catppuccin Mocha` as a built-in theme since v0.25. `bat/config` just sets `--theme="Catppuccin Mocha"` — no theme file vendored. If a future bat version drops the built-in, re-vendor from `catppuccin/bat`.
 - **eza**: `eza/theme.yml` is the **mauve** mocha variant from `catppuccin/eza`, chosen to match starship's git_branch accent. eza has no built-in catppuccin theme, so this file is required. To swap accents, replace it with another from `catppuccin/eza`'s `themes/mocha/` directory. Requires eza ≥ 0.20.
 - **Ghostty**: `theme = Catppuccin Mocha` in `ghostty/config` references Ghostty's built-in theme since v1.0 — no theme file vendored. (The cloned `~/.config/ghostty/themes/catppuccin/` on the user's Mac is leftover and unused; safe to delete.) Config locations differ by OS — see "Ghostty config paths" below.
