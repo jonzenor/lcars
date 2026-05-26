@@ -1411,6 +1411,37 @@
   /* Inner span shouldn't have its own background */
   .create-btn span, .confirm-btn span { background: transparent !important; }
 
+  /* Standup tool Start/End trigger — Agility scopes its green under #standup-tool-id,
+     which beats a bare .create-btn even with !important, so match specificity here. */
+  #standup-tool-id .create-btn,
+  #standup-tool-id div.create-btn,
+  #standup-tool-id #data-trackingid-standuptool-start-end-button {
+    background-color: var(--ctp-green) !important;
+    border-color: var(--ctp-green) !important;
+    color: var(--ctp-base) !important;
+  }
+  #standup-tool-id .create-btn *,
+  #standup-tool-id #data-trackingid-standuptool-start-end-button * {
+    color: var(--ctp-base) !important;
+    background: transparent !important;
+  }
+  #standup-tool-id .create-btn:hover,
+  #standup-tool-id #data-trackingid-standuptool-start-end-button:hover {
+    background-color: var(--ctp-teal) !important;
+    border-color: var(--ctp-teal) !important;
+  }
+
+  /* Standup tool dropdown panel — inline styles set a non-catppuccin teal background
+     and border; override with the same selector specificity as the inline-style host. */
+  .standup-tool[data-testid="StandupTool"] {
+    background-color: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface2) !important;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.5) !important;
+  }
+  .standup-tool .inline-cancel-btn {
+    border-radius: 9999px !important;
+  }
+
   /* Notification badge (board stale indicator, etc.) */
   .notification-badge,
   [class*="notification-badge"], [class*="NotificationBadge"] {
@@ -2377,4 +2408,466 @@
     background-color: var(--ctp-mantle) !important;
     border-bottom: 1px solid var(--ctp-surface1) !important;
   }
+
+  /* ============ QuickEdit (Story / Defect / Task) modal ============
+     This dialog uses .DetailPageWrapper / .DetailPageSection / .Pane and is
+     served as its own page inside an iframe-style modal, so the .asset-info
+     overrides above don't apply. Everything below targets that layout. */
+
+  /* Outer wrapper + content panes */
+  body.ultimate,
+  .DetailPageWrapper,
+  .DetailPageWrapper .DetailContent,
+  .DetailPageWrapper .DetailContent .c,
+  .DetailPageWrapper .Pane {
+    background-color: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface0) !important;
+  }
+
+  /* Title bar: "Story" h1 + Save/Cancel button row */
+  .DetailPageWrapper .t,
+  .DetailPageWrapper > tbody > tr > td > .t {
+    background-color: var(--ctp-mantle) !important;
+    background-image: none !important;
+    border-bottom: 1px solid var(--ctp-surface0) !important;
+  }
+  .DetailPageWrapper .t .title,
+  .DetailPageWrapper .t .title h1 {
+    color: var(--ctp-text) !important;
+    background: transparent !important;
+  }
+
+  /* Attribute label column ("Title:", "Iteration:", etc.) */
+  .DetailPageSection .AttributeLabel,
+  .DetailPageWrapper .AttributeLabel {
+    color: var(--ctp-subtext1) !important;
+    background: transparent !important;
+  }
+  /* Required-field asterisk + importance flag */
+  .DetailPageSection .AttributeLabel .error,
+  .DetailPageWrapper .AttributeLabel .error { color: var(--ctp-red) !important; }
+  .DetailPageSection .AttributeLabel .important .svg-icon,
+  .DetailPageWrapper .AttributeLabel .important .svg-icon {
+    fill: var(--ctp-yellow) !important;
+  }
+
+  /* Row separators between fields (Agility uses light borders by default) */
+  .DetailPageSection tr.item,
+  .DetailPageSection tr.item > td {
+    background: transparent !important;
+    border-color: var(--ctp-surface0) !important;
+  }
+
+  /* Inputs: kill the doubled border. Force a single surface2 border, no outline,
+     no inner box-shadow. Agility's own .text class sets a green border that needs
+     overriding at this nesting depth. */
+  .DetailPageSection input.text,
+  .DetailPageSection input[type="text"],
+  .DetailPageSection textarea,
+  .DetailPageWrapper input.text,
+  .DetailPageWrapper input[type="text"],
+  .DetailPageWrapper textarea {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 4px !important;
+  }
+  .DetailPageSection input.text:focus,
+  .DetailPageSection input[type="text"]:focus,
+  .DetailPageSection textarea:focus,
+  .DetailPageWrapper input.text:focus,
+  .DetailPageWrapper input[type="text"]:focus,
+  .DetailPageWrapper textarea:focus {
+    border-color: var(--ctp-blue) !important;
+    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.25) !important;
+  }
+  /* Hover should not introduce its own green border */
+  .DetailPageSection input.text:hover,
+  .DetailPageSection input[type="text"]:hover,
+  .DetailPageSection textarea:hover,
+  .DetailPageWrapper input.text:hover,
+  .DetailPageWrapper input[type="text"]:hover,
+  .DetailPageWrapper textarea:hover {
+    border-color: var(--ctp-surface2) !important;
+  }
+
+  /* Dropdowns inside QuickEdit: Iteration, Status, Priority, etc.
+     These render as a pill (.dropdown.svdropdown) with .ddtext + .dropdownbutton. */
+  .DetailPageSection .dropdown.svdropdown,
+  .DetailPageSection .autocomplete-dropdown.svdropdown,
+  .DetailPageWrapper .dropdown.svdropdown,
+  .DetailPageWrapper .autocomplete-dropdown.svdropdown {
+    background-color: var(--ctp-surface0) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+    border-radius: 9999px !important;
+    color: var(--ctp-text) !important;
+  }
+  .DetailPageSection .dropdown.svdropdown:focus-within,
+  .DetailPageSection .autocomplete-dropdown.svdropdown:focus-within,
+  .DetailPageWrapper .dropdown.svdropdown:focus-within,
+  .DetailPageWrapper .autocomplete-dropdown.svdropdown:focus-within {
+    border-color: var(--ctp-blue) !important;
+  }
+  .DetailPageSection .dropdown .ddtext,
+  .DetailPageSection .dropdown .ddtext a,
+  .DetailPageSection .dropdown .ddtext span,
+  .DetailPageSection .autocomplete-dropdown input.ui-autocomplete-input,
+  .DetailPageWrapper .dropdown .ddtext,
+  .DetailPageWrapper .dropdown .ddtext a,
+  .DetailPageWrapper .dropdown .ddtext span,
+  .DetailPageWrapper .autocomplete-dropdown input.ui-autocomplete-input {
+    color: var(--ctp-text) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  /* Preserve the background-image (chevron sprite/SVG) — only flatten color */
+  .DetailPageSection .dropdownbutton,
+  .DetailPageWrapper .dropdownbutton {
+    color: var(--ctp-subtext0) !important;
+    background-color: transparent !important;
+  }
+  /* Inner table that holds the dropdown text + chevron. The table cells (.ddtext,
+     .ddbutton) and the <a> link inside .ddtext can each carry their own borders
+     and backgrounds in Agility's CSS — strip all of them so only the outer
+     .dropdown.svdropdown pill draws the boundary. */
+  .DetailPageSection .dropdown.svdropdown .dd-container,
+  .DetailPageSection .dropdown.svdropdown .dd-table,
+  .DetailPageSection .dropdown.svdropdown .dd-container tr,
+  .DetailPageSection .dropdown.svdropdown .dd-container td,
+  .DetailPageSection .dropdown.svdropdown .ddtext,
+  .DetailPageSection .dropdown.svdropdown .ddbutton,
+  .DetailPageWrapper .dropdown.svdropdown .dd-container,
+  .DetailPageWrapper .dropdown.svdropdown .dd-table,
+  .DetailPageWrapper .dropdown.svdropdown .dd-container tr,
+  .DetailPageWrapper .dropdown.svdropdown .dd-container td,
+  .DetailPageWrapper .dropdown.svdropdown .ddtext,
+  .DetailPageWrapper .dropdown.svdropdown .ddbutton,
+  /* Same for the autocomplete (Planning Level) variant */
+  .DetailPageSection .autocomplete-dropdown.svdropdown .dd-container,
+  .DetailPageSection .autocomplete-dropdown.svdropdown .dd-container td,
+  .DetailPageWrapper .autocomplete-dropdown.svdropdown .dd-container,
+  .DetailPageWrapper .autocomplete-dropdown.svdropdown .dd-container td {
+    background-color: transparent !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  /* The <a> link that wraps the dropdown text — don't let link styles add an
+     underline or hover background inside the pill */
+  .DetailPageSection .dropdown.svdropdown .ddtext a,
+  .DetailPageWrapper .dropdown.svdropdown .ddtext a {
+    background: transparent !important;
+    text-decoration: none !important;
+    color: var(--ctp-text) !important;
+  }
+  /* Clickable chevron — kill focus ring (was green) and any inner border */
+  .DetailPageSection .dropdown.svdropdown .dropdownbutton:focus,
+  .DetailPageWrapper .dropdown.svdropdown .dropdownbutton:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  /* Keep the pill from inflating when content adds padding: use border-box.
+     Also clamp height to roughly the input height (text inputs are ~26px tall
+     with our 1px border + browser default padding). */
+  .DetailPageSection .dropdown.svdropdown,
+  .DetailPageSection .autocomplete-dropdown.svdropdown,
+  .DetailPageWrapper .dropdown.svdropdown,
+  .DetailPageWrapper .autocomplete-dropdown.svdropdown {
+    box-sizing: border-box !important;
+    height: 26px !important;
+    padding: 0 !important;
+  }
+  /* Compact the inner table cells so the text + chevron sit centered, not
+     vertically stretched. cellpadding="0" handles spacing but the browser still
+     adds td padding and line-height; force both to behave. */
+  .DetailPageSection .dropdown.svdropdown .dd-container,
+  .DetailPageSection .dropdown.svdropdown .dd-table,
+  .DetailPageWrapper .dropdown.svdropdown .dd-container,
+  .DetailPageWrapper .dropdown.svdropdown .dd-table {
+    height: 100% !important;
+    margin: 0 !important;
+  }
+  .DetailPageSection .dropdown.svdropdown .ddtext,
+  .DetailPageSection .dropdown.svdropdown .ddbutton,
+  .DetailPageWrapper .dropdown.svdropdown .ddtext,
+  .DetailPageWrapper .dropdown.svdropdown .ddbutton {
+    padding: 0 !important;
+    vertical-align: middle !important;
+    line-height: 1 !important;
+  }
+  .DetailPageSection .dropdown.svdropdown .ddtext,
+  .DetailPageWrapper .dropdown.svdropdown .ddtext { padding-left: 10px !important; }
+  .DetailPageSection .dropdown.svdropdown .ddbutton,
+  .DetailPageWrapper .dropdown.svdropdown .ddbutton { padding-right: 6px !important; }
+  /* Center the link/text inside .ddtext — set its own line-height to match the
+     pill height so inline content centers properly */
+  .DetailPageSection .dropdown.svdropdown .ddtext a,
+  .DetailPageSection .dropdown.svdropdown .ddtext span,
+  .DetailPageWrapper .dropdown.svdropdown .ddtext a,
+  .DetailPageWrapper .dropdown.svdropdown .ddtext span {
+    display: inline-block !important;
+    line-height: 24px !important;
+    vertical-align: middle !important;
+  }
+
+  /* The dropdown "popup" is actually a native <select size="6"> list-box,
+     positioned absolutely under the pill. Style the select and its options. */
+  .dropdown.svdropdown select.select,
+  .DetailPageSection select.select,
+  .DetailPageWrapper select.select {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  }
+  .dropdown.svdropdown select.select option,
+  .DetailPageSection select.select option,
+  .DetailPageWrapper select.select option {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+  .dropdown.svdropdown select.select option:checked,
+  .DetailPageSection select.select option:checked,
+  .DetailPageWrapper select.select option:checked {
+    background-color: var(--ctp-surface2) !important;
+    color: var(--ctp-text) !important;
+  }
+  .dropdown.svdropdown select.select option:hover,
+  .DetailPageSection select.select option:hover,
+  .DetailPageWrapper select.select option:hover {
+    background-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* Lookup pills (Team, Portfolio Item, Owners) — already handled by the global
+     .lookup rule but inside the QuickEdit form Agility's overrides can win.
+     Re-state the basics at higher specificity. */
+  .DetailPageSection .lookup,
+  .DetailPageSection .lookup.single,
+  .DetailPageSection .lookup.multi,
+  .DetailPageSection .lookup.has-selection,
+  .DetailPageWrapper .lookup,
+  .DetailPageWrapper .lookup.has-selection {
+    background-color: var(--ctp-surface0) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+    border-radius: 9999px !important;
+    color: var(--ctp-text) !important;
+  }
+  .DetailPageSection .lookup .items li.item,
+  .DetailPageWrapper .lookup .items li.item {
+    background-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface2) !important;
+  }
+  .DetailPageSection .lookup .items li.item .name,
+  .DetailPageWrapper .lookup .items li.item .name { color: var(--ctp-text) !important; }
+  .DetailPageSection .lookup .items li.item .remove,
+  .DetailPageWrapper .lookup .items li.item .remove { color: var(--ctp-subtext0) !important; }
+  .DetailPageSection .lookup .items li.item .remove:hover,
+  .DetailPageWrapper .lookup .items li.item .remove:hover { color: var(--ctp-red) !important; }
+
+  /* TinyMCE WYSIWYG chrome (Description, User Story, Acceptance Criteria editors).
+     Agility ships TinyMCE with its default greenish skin — re-paint to mocha. */
+  .tox.tox-tinymce {
+    background-color: var(--ctp-surface0) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+    border-radius: 4px !important;
+  }
+  /* TinyMCE's skin scopes most rules with `.tox:not(.tox-tinymce-inline) X`,
+     which has higher specificity than `.tox X`. Match it with `.tox.tox-tinymce X`
+     so our !important wins on tie-break (and use `background` shorthand to kill
+     any background-image gradients in their skin). */
+  .tox.tox-tinymce .tox-editor-container,
+  .tox.tox-tinymce .tox-editor-header,
+  .tox.tox-tinymce .tox-toolbar-overlord,
+  .tox.tox-tinymce .tox-toolbar__primary,
+  .tox.tox-tinymce .tox-toolbar,
+  .tox.tox-tinymce .tox-toolbar__group,
+  .tox.tox-tinymce .tox-anchorbar,
+  .tox.tox-tinymce .tox-bottom-anchorbar,
+  .tox.tox-tinymce .tox-sidebar-wrap,
+  .tox.tox-tinymce .tox-sidebar,
+  .tox.tox-tinymce .tox-statusbar,
+  .tox:not(.tox-tinymce-inline) .tox-editor-header,
+  .tox:not(.tox-tinymce-inline) .tox-toolbar,
+  .tox:not(.tox-tinymce-inline) .tox-toolbar__primary,
+  .tox:not(.tox-tinymce-inline) .tox-statusbar {
+    background: var(--ctp-mantle) !important;
+    background-image: none !important;
+    border-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* Maximum-specificity fallback: chain body class + multiple ancestor classes.
+     If Agility's tinymce_overrides.css uses a deep selector path, this beats it. */
+  body.ultimate .tox.tox-tinymce > .tox-editor-container > .tox-editor-header,
+  body.ultimate .tox.tox-tinymce > .tox-statusbar,
+  body.ultimate .tox.tox-tinymce .tox-editor-header,
+  body.ultimate .tox.tox-tinymce .tox-statusbar,
+  body.ultimate .tox.tox-tinymce .tox-toolbar-overlord,
+  body.ultimate .tox.tox-tinymce .tox-toolbar__primary,
+  body.ultimate .tox.tox-tinymce .tox-toolbar,
+  body.ultimate .tox.tox-tinymce .tox-editor-container {
+    background: var(--ctp-mantle) !important;
+    background-color: var(--ctp-mantle) !important;
+    background-image: none !important;
+  }
+  /* Toolbar buttons — TinyMCE uses `.tox .tox-tbtn` (0,2,0) so we match with
+     `.tox.tox-tinymce .tox-tbtn` (0,3,0) to beat any skin override. */
+  .tox.tox-tinymce .tox-tbtn,
+  .tox.tox-tinymce .tox-tbtn--select,
+  .tox.tox-tinymce .tox-tbtn--bespoke,
+  body.ultimate .tox .tox-tbtn {
+    background: transparent !important;
+    background-image: none !important;
+    color: var(--ctp-text) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+  .tox.tox-tinymce .tox-tbtn:hover:not(.tox-tbtn--disabled),
+  .tox.tox-tinymce .tox-tbtn:focus:not(.tox-tbtn--disabled),
+  body.ultimate .tox .tox-tbtn:hover:not(.tox-tbtn--disabled) {
+    background: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .tox.tox-tinymce .tox-tbtn--enabled,
+  .tox.tox-tinymce .tox-tbtn--enabled:hover,
+  .tox.tox-tinymce .tox-tbtn[aria-pressed="true"],
+  body.ultimate .tox .tox-tbtn--enabled {
+    background: var(--ctp-surface2) !important;
+    color: var(--ctp-text) !important;
+  }
+  .tox .tox-tbtn--disabled,
+  .tox .tox-tbtn--disabled svg,
+  .tox .tox-tbtn[aria-disabled="true"] svg { opacity: 0.4 !important; }
+  /* Icons inside toolbar buttons inherit currentColor via fill */
+  .tox .tox-tbtn svg,
+  .tox .tox-tbtn__icon-wrap svg,
+  .tox .tox-icon svg {
+    fill: var(--ctp-subtext1) !important;
+  }
+  .tox .tox-tbtn:hover svg,
+  .tox .tox-tbtn--enabled svg { fill: var(--ctp-text) !important; }
+  /* "Paragraph" style picker chevron + label */
+  .tox .tox-tbtn__select-label { color: var(--ctp-text) !important; }
+  .tox .tox-tbtn__select-chevron svg { fill: var(--ctp-subtext0) !important; }
+  /* Status bar at the bottom (the "p" path indicator + resize handle) */
+  .tox .tox-statusbar__path-item,
+  .tox .tox-statusbar__text-container { color: var(--ctp-subtext0) !important; }
+  .tox .tox-statusbar__resize-handle svg { fill: var(--ctp-subtext0) !important; }
+  /* TinyMCE floating popups (style menu, table picker, link dialog) are mounted
+     under .tox-tinymce-aux outside the editor — theme them too */
+  .tox.tox-tinymce-aux .tox-menu,
+  .tox.tox-tinymce-aux .tox-collection,
+  .tox.tox-tinymce-aux .tox-collection__group {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface2) !important;
+  }
+  .tox.tox-tinymce-aux .tox-collection__item { color: var(--ctp-text) !important; }
+  .tox.tox-tinymce-aux .tox-collection__item--active,
+  .tox.tox-tinymce-aux .tox-collection__item:hover {
+    background-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* TinyMCE keeps a few green leftovers: separator lines between toolbar groups,
+     the divider above the edit area and statusbar, and focus rings on buttons.
+     `.tox-anchorbar` and `.tox-bottom-anchorbar` are 1px-tall divider strips
+     that show as a colored line — override their background too, not just border. */
+  .tox.tox-tinymce .tox-toolbar__group:not(:last-of-type),
+  .tox.tox-tinymce .tox-toolbar-overlord .tox-toolbar__group {
+    border-right-color: var(--ctp-surface1) !important;
+  }
+  .tox.tox-tinymce .tox-editor-header,
+  .tox.tox-tinymce .tox-statusbar,
+  .tox.tox-tinymce .tox-edit-area,
+  .tox.tox-tinymce .tox-edit-area__iframe {
+    border-color: var(--ctp-surface0) !important;
+  }
+  .tox.tox-tinymce .tox-anchorbar,
+  .tox.tox-tinymce .tox-bottom-anchorbar {
+    background: var(--ctp-surface0) !important;
+    border: none !important;
+  }
+  /* Statusbar bottom strip — kill its top-border green and any background tint */
+  .tox.tox-tinymce .tox-statusbar {
+    border-top: 1px solid var(--ctp-surface0) !important;
+  }
+  .tox .tox-tbtn:focus:not(.tox-tbtn--disabled),
+  .tox .tox-tbtn:focus-visible:not(.tox-tbtn--disabled) {
+    box-shadow: none !important;
+    outline-color: var(--ctp-blue) !important;
+  }
+  .tox .tox-tbtn--select:focus,
+  .tox .tox-tbtn--bespoke:focus { outline-color: var(--ctp-blue) !important; }
+  /* The "Paragraph" select button has its own background treatment */
+  .tox .tox-tbtn--bespoke {
+    background-color: var(--ctp-surface0) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+  }
+  /* Edit area iframe background — visible behind the iframe content when the
+     iframe's own srcdoc body is transparent (rich text loaded into Description) */
+  .tox .tox-edit-area { background-color: var(--ctp-base) !important; }
+
+  /* Change Comment textarea (bottom of QuickEdit) */
+  .DetailPageWrapper textarea.textarea,
+  .DetailPageSection textarea.textarea {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+  }
+
+  /* Asset lookup popup (Owners, Team, Portfolio Item search dropdown).
+     Rendered as a positioned <dl class="results"> outside the form, with
+     section headers (<dt>) and list items (<dd>). Default skin is green. */
+  dl.results {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+    border-radius: 6px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  }
+  dl.results dt {
+    background-color: var(--ctp-mantle) !important;
+    color: var(--ctp-subtext0) !important;
+    border-color: var(--ctp-surface1) !important;
+    font-weight: 600;
+  }
+  dl.results dt.searching,
+  dl.results dt.too-short,
+  dl.results dt.lookup-no-results,
+  dl.results dt.warn {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-yellow) !important;
+  }
+  dl.results dd {
+    background-color: transparent !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  dl.results dd:hover,
+  dl.results dd.highlight {
+    background-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  dl.results dd.disabled,
+  dl.results dd.disabled .name,
+  dl.results dd.disabled span {
+    color: var(--ctp-overlay1) !important;
+  }
+  dl.results dd .details,
+  dl.results dd .asset-name-link .details {
+    color: var(--ctp-subtext0) !important;
+  }
+  dl.results dd .name,
+  dl.results dd .asset-name-link {
+    color: var(--ctp-text) !important;
+    background: transparent !important;
+  }
+  dl.results a { color: var(--ctp-blue) !important; }
 }
