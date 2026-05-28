@@ -1,9 +1,10 @@
 /* ==UserStyle==
 @name           Agility - Catppuccin Mocha
 @namespace      github.com/catppuccin
-@version        0.3.0
+@version        0.5.3
 @description    Catppuccin Mocha theme for Digital.ai Agility
 @author         you
+@preprocessor   default
 @var            select accent "Accent color" {
   "Rosewater":   "#f5e0dc",
   "Flamingo":    "#f2cdcd",
@@ -48,9 +49,11 @@
     --ctp-teal:      #94e2d5;
     --ctp-sapphire:  #74c7ec;
 
-    /* User-selectable accent (Stylus settings > Configure). Used for the
-       bright borders on highlight elements like the qtip hover card. */
-    --ctp-accent: /*[[accent]]*/;
+    /* Stylus injects the @var dropdown's selected hex as `--accent` on the
+       document root. We reference it directly throughout the file (an alias
+       like `--ctp-accent: var(--accent)` does not resolve on Chrome's Stylus
+       build — chained custom properties come out empty). Focus glow / tint
+       use color-mix() inline so they scale with whichever accent is picked. */
 
     color-scheme: dark;
   }
@@ -166,9 +169,9 @@
 
   /* Card title / number */
   .story-card a, [class*="StoryCard"] a, [class*="card"] a {
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
   }
-  .story-card a:hover { color: var(--ctp-lavender) !important; }
+  .story-card a:hover { color: color-mix(in srgb, var(--accent) 70%, white) !important; }
 
   /* Asset type badges (Story=green, Defect=red, Task=blue typically) */
   [class*="story"][class*="badge"], [data-asset-type="Story"] {
@@ -570,10 +573,10 @@
   #breakdown-table .assetTable .stack-label { color: var(--ctp-subtext0) !important; }
   #breakdown-table .assetTable .asset-name,
   #breakdown-table .assetTable a.asset-name {
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
     text-decoration: none !important;
   }
-  #breakdown-table .assetTable a.asset-name:hover { color: var(--ctp-lavender) !important; }
+  #breakdown-table .assetTable a.asset-name:hover { color: color-mix(in srgb, var(--accent) 70%, white) !important; }
   #breakdown-table .assetTable .stack-separator {
     background-color: var(--ctp-surface0) !important;
     height: 1px;
@@ -717,7 +720,7 @@
   .MuiDrawer-paper li.dot-list-item[aria-current="true"],
   .MuiDrawer-paper li.dot-list-item[aria-current="page"] {
     background-color: var(--ctp-surface1) !important;
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
   }
   /* Links inside list items */
   .MuiDrawer-paper .dot-list-item-link,
@@ -853,10 +856,10 @@
     font-size: 0.85em;
     display: block;
   }
-  /* Current iteration column highlight — Catppuccin green (matches buttons) */
+  /* Current iteration column highlight — tinted with the user-selected accent */
   #iterationPlanningBoardContainer .board-column.current-bucket,
   #iterationPlanningBoardContainer .board-row .board-column.current-bucket {
-    background-color: rgba(166, 227, 161, 0.12) !important; /* green @ 12% */
+    background-color: color-mix(in srgb, var(--accent) 12%, transparent) !important;
     background-image: none !important;
     border: 1px solid var(--ctp-surface0) !important;
     outline: none !important;
@@ -871,12 +874,12 @@
     box-shadow: none !important;
     filter: none !important;
   }
-  /* Solid green header so text gets the dark-on-green button treatment */
+  /* Solid accent header so text gets the dark-on-accent button treatment */
   #iterationPlanningBoardContainer .board-column.current-bucket .board-column-header,
   #iterationPlanningBoardContainer .board-column.current-bucket .period-header {
-    background-color: var(--ctp-green) !important;
+    background-color: var(--accent) !important;
     color: var(--ctp-base) !important;
-    border: 1px solid var(--ctp-green) !important;
+    border: 1px solid var(--accent) !important;
     border-radius: 4px !important;
   }
   /* Kill the neon-green outline from any pseudo-element on the header */
@@ -1017,7 +1020,7 @@
     padding: 6px 8px;
   }
   #iterationPlanningBoardContainer .iteration-board-card .header-content a.asset-number-link {
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
     font-weight: 600;
     text-decoration: none !important;
   }
@@ -1026,7 +1029,7 @@
     text-decoration: none !important;
   }
   #iterationPlanningBoardContainer .iteration-board-card .card-title a:hover {
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
   }
   #iterationPlanningBoardContainer .iteration-board-card .bottom-content {
     color: var(--ctp-subtext1) !important;
@@ -1043,8 +1046,8 @@
   /* Drop target highlight */
   #iterationPlanningBoardContainer .board-cards.ui-droppable.ui-droppable-active,
   #iterationPlanningBoardContainer .board-cards.ui-droppable.ui-droppable-hover {
-    background-color: rgba(137, 180, 250, 0.1) !important;
-    outline: 1px dashed var(--ctp-blue);
+    background-color: color-mix(in srgb, var(--accent) 12%, transparent) !important;
+    outline: 1px dashed var(--accent);
   }
 
   /* ============ Calendar (FullCalendar + MUI sidebar) ============ */
@@ -1091,7 +1094,7 @@
     border-color: var(--ctp-surface1) !important;
     opacity: 1 !important;
   }
-  .fc .fc-button-primary:focus { box-shadow: 0 0 0 2px rgba(137,180,250,0.25) !important; }
+  .fc .fc-button-primary:focus { box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent) !important; }
   .fc .fc-icon { color: var(--ctp-text) !important; }
   .fc .fc-add-button {
     background-color: var(--ctp-blue) !important;
@@ -1131,10 +1134,10 @@
   /* Today's cell highlight — subtle blue instead of olive */
   .fc .fc-day-today,
   .fc .fc-day-today .fc-daygrid-day-bg {
-    background-color: rgba(137, 180, 250, 0.08) !important;
+    background-color: color-mix(in srgb, var(--accent) 10%, transparent) !important;
   }
   .fc .fc-day-today .fc-daygrid-day-number {
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
     font-weight: 700;
   }
   /* Day number links */
@@ -1143,7 +1146,7 @@
     color: var(--ctp-subtext1) !important;
     text-decoration: none !important;
   }
-  .fc .fc-daygrid-day-number:hover { color: var(--ctp-blue) !important; }
+  .fc .fc-daygrid-day-number:hover { color: var(--accent) !important; }
 
   /* Event blocks — recolor by .color-* class */
   .fc .fc-event, .fc-daygrid-event {
@@ -1363,8 +1366,8 @@
   }
 
   /* ============ Links ============ */
-  a, a:visited { color: var(--ctp-blue) !important; }
-  a:hover { color: var(--ctp-lavender) !important; }
+  a, a:visited { color: var(--accent) !important; }
+  a:hover { color: color-mix(in srgb, var(--accent) 70%, white) !important; }
 
   /* ============ Tables / lists (when modals show related items) ============ */
   table { background-color: transparent !important; }
@@ -1400,8 +1403,20 @@
   .ui-tooltip-asset-hover {
     background-color: var(--ctp-mantle) !important;
     color: var(--ctp-text) !important;
-    border: 2px solid var(--ctp-accent) !important;
+    border: 2px solid var(--accent) !important;
+    border-radius: 6px !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+  }
+  /* qtip2 draws a second border + radius on the inner content/title wrappers.
+     Strip those so only the outer accent ring is visible. The titlebar's
+     border-bottom (set below) is the title/body divider and is reapplied
+     after this in source order so it survives. */
+  .qtip-content,
+  .qtip-titlebar,
+  .ui-tooltip-asset-hover .qtip-content,
+  .ui-tooltip-asset-hover .qtip-titlebar {
+    border: none !important;
+    box-shadow: none !important;
   }
   .qtip-titlebar,
   .ui-tooltip-asset-hover .qtip-titlebar {
@@ -1412,7 +1427,7 @@
   .qtip-title,
   .qtip-titlebar a,
   .qtip-titlebar .qtip-title {
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
   }
   .qtip-content,
   .ui-tooltip-asset-hover .qtip-content {
@@ -1421,7 +1436,7 @@
   }
   .qtip-content a,
   .qtip-content .asset-name-link {
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
   }
   .qtip-close,
   .qtip-icon {
@@ -1457,9 +1472,24 @@
   .owner-list, .owner-list ul, .owner-list .owner {
     background-color: transparent !important;
   }
-  .owner-list .owner.selected {
+  .owner-list .owner.selected,
+  li.owner.selected {
     background-color: var(--ctp-surface1) !important;
     border-radius: 4px;
+  }
+  /* Accent ring around the selected member's avatar. Agility's own rule
+     paints the ring with `border` on the avatar (image and/or wrapper),
+     so we override `border-color` to recolor it without changing the
+     ring thickness or breaking layout. Targets both the <img class="avatar">
+     and the <div class="avatar"> wrapper — only whichever actually has
+     the border will be visually affected. */
+  li.owner.selected img.avatar,
+  li.owner.selected .avatar img,
+  li.owner.selected > div.avatar,
+  .owner-list .owner.selected img.avatar,
+  .owner-list .owner.selected .avatar img,
+  .owner-list .owner.selected > div.avatar {
+    border-color: var(--accent) !important;
   }
   .owner-list .back, .owner-list .forward,
   .navigation .back, .navigation .forward {
@@ -1549,7 +1579,7 @@
     box-shadow: none !important;
   }
   .lookup input:focus { box-shadow: none !important; outline: none !important; }
-  .lookup:focus-within { border-color: var(--ctp-blue) !important; }
+  .lookup:focus-within { border-color: var(--accent) !important; }
   /* Tokens / chips inside multi lookups */
   .lookup .items li:not(.input) {
     background-color: var(--ctp-surface1) !important;
@@ -1577,14 +1607,14 @@
   [class*="quick-action"]:hover,
   .btn-icon:hover, .icon-btn:hover, .action-btn:hover, .action-button:hover {
     background-color: var(--ctp-surface1) !important;
-    border-color: var(--ctp-blue) !important;
+    border-color: var(--accent) !important;
     color: var(--ctp-text) !important;
-    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.25) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent) !important;
   }
   .iconButton:focus, [class*="iconButton"]:focus,
   .actions:focus, [class*="quick-action"]:focus {
-    border-color: var(--ctp-blue) !important;
-    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.25) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent) !important;
     outline: none !important;
   }
   /* SVG icons inside these buttons */
@@ -1605,7 +1635,7 @@
 
   /* Catch any remaining green focus rings / borders globally */
   *:focus-visible {
-    outline-color: var(--ctp-blue) !important;
+    outline-color: var(--accent) !important;
   }
 
   /* ============ Filter bar (Storyboard) ============ */
@@ -1634,7 +1664,7 @@
     background-color: transparent !important;
   }
   .react-lookup:focus-within {
-    border-color: var(--ctp-blue) !important;
+    border-color: var(--accent) !important;
   }
   .react-lookup .prepend-container, .react-lookup-prepend-icon-container,
   .react-lookup .prepend-container *, .react-lookup-prepend-icon-container * {
@@ -1703,7 +1733,7 @@
     color: var(--ctp-subtext0) !important;
   }
   .clear-item:hover { color: var(--ctp-red) !important; }
-  .edit-item:hover { color: var(--ctp-blue) !important; }
+  .edit-item:hover { color: var(--accent) !important; }
   .clear-item svg, .edit-item svg { fill: currentColor !important; }
 
   /* Clear All Filters button */
@@ -1805,8 +1835,8 @@
   .story-card .title a, .content.story-card .title a {
     color: var(--ctp-text) !important;
   }
-  .story-card .title a:hover { color: var(--ctp-blue) !important; }
-  .asset-number-link { color: var(--ctp-blue) !important; }
+  .story-card .title a:hover { color: var(--accent) !important; }
+  .asset-number-link { color: var(--accent) !important; }
   .story-card .status { color: var(--ctp-subtext0) !important; font-style: italic; }
   .story-card .bottom-content, .story-card .owners a {
     color: var(--ctp-subtext1) !important;
@@ -1851,8 +1881,8 @@
   }
   .asset-summary .tabs li.tab a:hover { color: var(--ctp-text) !important; }
   .asset-summary .tabs li.tab.selected a, .asset-summary .tabstrip .tab.selected a {
-    color: var(--ctp-blue) !important;
-    border-bottom-color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
+    border-bottom-color: var(--accent) !important;
     font-weight: 600;
   }
 
@@ -1888,7 +1918,7 @@
   }
   .side-panel .tabs .tab.selected {
     background-color: var(--ctp-surface0) !important;
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
   }
   .side-panel .tabs .tab .svg-icon { fill: currentColor !important; }
   .side-panel h3, .side-panel .titlebar h3 { color: var(--ctp-text) !important; }
@@ -1904,7 +1934,7 @@
     margin-bottom: 8px;
   }
   .conversation .header { background-color: transparent !important; border: none !important; }
-  .conversation .name a, .conversation .name { color: var(--ctp-blue) !important; }
+  .conversation .name a, .conversation .name { color: var(--accent) !important; }
   .conversation .when, .conversation time { color: var(--ctp-subtext0) !important; }
   .conversation .details .content { color: var(--ctp-text) !important; }
   .conversation .remove-conversation .svg-icon { fill: var(--ctp-overlay1) !important; }
@@ -1996,7 +2026,7 @@
     background-color: transparent !important;
   }
   .relation-links ul li a:hover, .relation-links a:hover {
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
   }
   .relation-links .links-link a[data-count]::after,
   .relation-links .attachments-link a[data-count]::after {
@@ -2053,9 +2083,9 @@
 
   /* Asset name links (Planning Level, Owners, Iteration, etc.) */
   .asset-name-link, .open-by-name, .asset-name-link span {
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
   }
-  .asset-name-link:hover { color: var(--ctp-lavender) !important; }
+  .asset-name-link:hover { color: color-mix(in srgb, var(--accent) 70%, white) !important; }
 
   /* react-select dropdowns */
   .asset-info .react-select-container,
@@ -2080,7 +2110,7 @@
   }
   .react-select__option--is-selected {
     background-color: var(--ctp-surface2) !important;
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
   }
   .react-select-custom-arrow { color: var(--ctp-subtext0) !important; }
   .react-select-custom-clear { color: var(--ctp-overlay1) !important; }
@@ -2359,8 +2389,8 @@
   .asset-info .lookup-display-container:focus-within,
   .asset-info .tag-display-container:focus-within,
   .asset-info .select-display-container:focus-within {
-    border-color: var(--ctp-lavender) !important;
-    box-shadow: 0 0 0 2px rgba(180, 190, 254, 0.18) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent) !important;
   }
 
   /* Strip inner pill/box borders so the outer container is the only visible boundary */
@@ -2439,7 +2469,7 @@
   }
   .navigation ol li.toggle.active {
     background-color: var(--ctp-surface1) !important;
-    color: var(--ctp-blue) !important;
+    color: var(--accent) !important;
     font-weight: 600;
   }
   .navigation .toggle-chevron, .navigation .svg-icon.chevron {
@@ -2563,8 +2593,8 @@
   .DetailPageWrapper input.text:focus,
   .DetailPageWrapper input[type="text"]:focus,
   .DetailPageWrapper textarea:focus {
-    border-color: var(--ctp-blue) !important;
-    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.25) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent) !important;
   }
   /* Hover should not introduce its own green border */
   .DetailPageSection input.text:hover,
@@ -2591,7 +2621,7 @@
   .DetailPageSection .autocomplete-dropdown.svdropdown:focus-within,
   .DetailPageWrapper .dropdown.svdropdown:focus-within,
   .DetailPageWrapper .autocomplete-dropdown.svdropdown:focus-within {
-    border-color: var(--ctp-blue) !important;
+    border-color: var(--accent) !important;
   }
   .DetailPageSection .dropdown .ddtext,
   .DetailPageSection .dropdown .ddtext a,
@@ -2883,10 +2913,10 @@
   .tox .tox-tbtn:focus:not(.tox-tbtn--disabled),
   .tox .tox-tbtn:focus-visible:not(.tox-tbtn--disabled) {
     box-shadow: none !important;
-    outline-color: var(--ctp-blue) !important;
+    outline-color: var(--accent) !important;
   }
   .tox .tox-tbtn--select:focus,
-  .tox .tox-tbtn--bespoke:focus { outline-color: var(--ctp-blue) !important; }
+  .tox .tox-tbtn--bespoke:focus { outline-color: var(--accent) !important; }
   /* The "Paragraph" select button has its own background treatment */
   .tox .tox-tbtn--bespoke {
     background-color: var(--ctp-surface0) !important;
@@ -2988,8 +3018,8 @@
   .v1-dialog input.text:focus,
   .v1-dialog input[type="text"]:focus,
   .v1-dialog textarea:focus {
-    border-color: var(--ctp-blue) !important;
-    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.25) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent) !important;
   }
   .v1-dialog input.text:hover,
   .v1-dialog input[type="text"]:hover,
@@ -3011,7 +3041,7 @@
   }
   .v1-dialog .dropdown.svdropdown:focus-within,
   .v1-dialog .autocomplete-dropdown.svdropdown:focus-within {
-    border-color: var(--ctp-blue) !important;
+    border-color: var(--accent) !important;
   }
   .v1-dialog .dropdown.svdropdown .dd-container,
   .v1-dialog .dropdown.svdropdown .dd-table,
@@ -3133,5 +3163,78 @@
     color: var(--ctp-text) !important;
     background: transparent !important;
   }
-  dl.results a { color: var(--ctp-blue) !important; }
+  dl.results a { color: var(--accent) !important; }
+
+  /* ============ Getting Started / Overview homepage ============
+     The page is structured as .content > (.content-nav | .items). Agility
+     paints the tab strip and various panels with a stock dark green; remap
+     them onto the catppuccin surfaces. Decorative .{color}-icon circles
+     keep their semantic colors — they identify sections at a glance. */
+  .content,
+  .content > .items,
+  .items .tabcontent,
+  .tabcontent .tab-layout,
+  .tab-layout .section,
+  .tab-layout .more-section,
+  .tab-layout .title-section,
+  .tab-layout .illustration-section,
+  .tab-layout .video-section,
+  .tab-layout .product-highlights,
+  .tab-layout .highlights {
+    background-color: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Left tab strip — give it a mantle panel so it reads as a sidebar */
+  .content > .content-nav {
+    background-color: var(--ctp-mantle) !important;
+    border-right: 1px solid var(--ctp-surface0) !important;
+  }
+  .content-nav .bottom-logo {
+    background-color: transparent !important;
+    color: var(--ctp-subtext0) !important;
+  }
+  .content-nav .bottom-logo p { color: var(--ctp-subtext0) !important; }
+  /* Tab buttons */
+  .content-nav .tablinks {
+    background-color: transparent !important;
+    color: var(--ctp-subtext1) !important;
+    border: none !important;
+    text-align: left;
+  }
+  .content-nav .tablinks:hover {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+  .content-nav .tablinks.active {
+    background-color: var(--ctp-surface1) !important;
+    color: var(--accent) !important;
+    font-weight: 600;
+  }
+  .content-nav .tablinks .svg-icon {
+    fill: currentColor !important;
+    color: currentColor !important;
+  }
+  /* Headings and body text inside tab content */
+  .tabcontent h2,
+  .tabcontent h3,
+  .tabcontent h4 {
+    color: var(--ctp-text) !important;
+  }
+  .tabcontent .main-text,
+  .tabcontent .secondary-text,
+  .tabcontent .description p,
+  .tabcontent .description div,
+  .tabcontent .video-caption,
+  .tabcontent ol li span,
+  .tabcontent ol li {
+    color: var(--ctp-subtext1) !important;
+  }
+  /* "Find my TeamRooms" / "Set up your room" call-to-action links */
+  .tabcontent .description-link {
+    color: var(--accent) !important;
+    text-decoration: none !important;
+  }
+  .tabcontent .description-link:hover {
+    color: color-mix(in srgb, var(--accent) 70%, white) !important;
+  }
 }
