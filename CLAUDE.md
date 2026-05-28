@@ -44,6 +44,18 @@ Everything is on the catppuccin **mocha** flavor. When adding tools, keep them o
 - **eza**: `eza/theme.yml` is the **mauve** mocha variant from `catppuccin/eza`, chosen to match starship's git_branch accent. eza has no built-in catppuccin theme, so this file is required. To swap accents, replace it with another from `catppuccin/eza`'s `themes/mocha/` directory. Requires eza ≥ 0.20.
 - **Ghostty**: `theme = Catppuccin Mocha` in `ghostty/config` references Ghostty's built-in theme since v1.0 — no theme file vendored. (The cloned `~/.config/ghostty/themes/catppuccin/` on the user's Mac is leftover and unused; safe to delete.) Config locations differ by OS — see "Ghostty config paths" below.
 
+## Stylus (browser userstyles)
+
+`Stylus/` holds [Stylus](https://add0n.com/stylus.html) userstyles that extend the catppuccin aesthetic into web apps the user spends time in. Not installed by `install.sh` — Stylus styles are imported into the browser extension, not symlinked from disk.
+
+Convention varies by style:
+- **`Stylus/agility-catppuccin-mocha.user.css`** — vanilla CSS (`@preprocessor default`), palette inlined as `--ctp-*` custom properties, Stylus injects the user-selected accent hex as `--accent`. **Important constraint baked into the file's comments: chained CSS custom properties (e.g. `--ctp-accent: var(--accent)`) do NOT resolve in Chrome's Stylus build — they come out empty. Always reference vars directly; never alias.**
+- **`Stylus/salesforce/catppuccin.user.less`** — Less (`@preprocessor less`), imports catppuccin's shared lib at `https://userstyles.catppuccin.com/lib/lib.less` to get `#lib.palette()`, `#lib.css-variables()`, `#lib.defaults()`. Mirrors [catppuccin/userstyles](https://github.com/catppuccin/userstyles) `styles/<site>/` upstream convention so the file could be upstreamed by copy. Same chained-var constraint applies — see the file's header comment.
+
+The two styles use different preprocessors intentionally: the agility one predates the salesforce one and uses the simpler vanilla-CSS approach; the salesforce one was authored against upstream's Less convention to keep an upstreaming option open. Future styles should pick whichever fits — neither is "the standard."
+
+The salesforce style also includes a per-environment header stripe (red on prod, mauve on sandboxes) driven by `@-moz-document` URL-pattern matching — no org-specific data in the file, works for any Salesforce user.
+
 ## Ghostty config paths
 
 Ghostty checks XDG paths first (`$XDG_CONFIG_HOME/ghostty/{config.ghostty,config}`) and then macOS-specific paths (`~/Library/Application Support/com.mitchellh.ghostty/{config.ghostty,config}`). All matching files are loaded; **later loads override earlier ones**, so on macOS the Application Support file wins on conflicts unless it doesn't exist.

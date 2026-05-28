@@ -1,0 +1,743 @@
+/* ==UserStyle==
+@name           Salesforce Catppuccin
+@namespace      github.com/jonzenor/lcars/Stylus/salesforce
+@homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/salesforce
+@version        0.1.2
+@updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/salesforce/catppuccin.user.less
+@supportURL     https://github.com/jonzenor/lcars/issues
+@description    Soothing pastel theme for Salesforce Lightning Experience, with a distinct header stripe color for sandboxes so you always know which environment you're in at a glance.
+@author         FinalAsgard
+@license        MIT
+
+@preprocessor   less
+
+@var select flavor "Flavor" ["latte:Latte", "frappe:Frappé", "macchiato:Macchiato", "mocha:Mocha*"]
+@var select accentColor "Accent" ["rosewater:Rosewater", "flamingo:Flamingo", "pink:Pink", "mauve:Mauve*", "red:Red", "maroon:Maroon", "peach:Peach", "yellow:Yellow", "green:Green", "teal:Teal", "sky:Sky", "sapphire:Sapphire", "blue:Blue", "lavender:Lavender"]
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/lib.less";
+
+/* ============================================================================
+   BASE THEME — applies to all Salesforce Lightning URLs (prod + sandboxes).
+
+   The sandbox @-moz-document block below this one narrows to sandbox-only URLs
+   and overrides just the header stripe color. Source order matters: keep the
+   sandbox block below this one so its override wins on sandbox URLs.
+
+   Heads up if you're new to this codebase: chained CSS custom properties
+   (e.g. --my-alias: var(--ctp-red)) do NOT resolve in Chrome's Stylus build.
+   Reference var(--ctp-*) directly throughout; never alias.
+   ============================================================================ */
+@-moz-document regexp("https:\/\/[^\/]+\.lightning\.force\.com\/.*"),
+               regexp("https:\/\/[^\/]+\.my\.salesforce-setup\.com\/.*") {
+  :root {
+    // #lib.palette() takes no args — it reads @flavor and @accentColor from
+    // scope (the Stylus @var declarations inject them as Less variables).
+    // #lib.defaults() sets color-scheme based on @flavor, so no need to set it
+    // ourselves here.
+    #lib.palette();
+    #lib.css-variables();
+    #lib.defaults();
+
+    // Lib doesn't emit --ctp-accent in css-variables(), but @accent is a Less
+    // var in scope here. Substituted to a hex literal at compile time → no
+    // runtime chain → safe in Chrome's Stylus build.
+    --ctp-accent: @accent;
+
+    // ------------------------------------------------------------------------
+    // Salesforce design-token overrides.
+    //
+    // This is the lever that actually reaches Lightning Web Components.
+    // CSS custom properties cross shadow DOM boundaries via inheritance, so
+    // setting --lwc-* and --slds-* tokens at :root propagates into every
+    // shadow root that consumes them. Class-based selectors below this block
+    // can only style light DOM; tokens are how we hit LWC interiors.
+    //
+    // Token names are best-guess based on documented SLDS/LWC tokens.
+    // Verify via DevTools (Inspect → Computed → look for --lwc-* / --slds-*)
+    // and add/remove as we discover what's actually consumed.
+    // ------------------------------------------------------------------------
+
+    // Backgrounds
+    --lwc-colorBackground: @base !important;
+    --lwc-colorBackgroundAlt: @mantle !important;
+    --lwc-colorBackgroundAlt2: @surface0 !important;
+    --lwc-colorBackgroundAltInverse: @crust !important;
+    --lwc-colorBackgroundInverse: @crust !important;
+    --lwc-colorBackgroundShade: @surface0 !important;
+    --lwc-colorBackgroundShadeDark: @surface1 !important;
+    --lwc-colorBackgroundRowHover: @surface0 !important;
+    --lwc-colorBackgroundRowSelected: @surface1 !important;
+    --lwc-colorBackgroundButton: @surface0 !important;
+    --lwc-colorBackgroundButtonDefault: @surface0 !important;
+    --lwc-colorBackgroundButtonDefaultHover: @surface1 !important;
+    --lwc-colorBackgroundInput: @mantle !important;
+    --lwc-colorBackgroundInputDisabled: @surface0 !important;
+
+    // Text — broad coverage. Salesforce uses many --lwc-colorText* variants;
+    // listing them explicitly because some elements consume non-default ones.
+    --lwc-colorTextDefault: @text !important;
+    --lwc-colorTextWeak: @subtext1 !important;
+    --lwc-colorTextLabel: @subtext1 !important;
+    --lwc-colorTextPlaceholder: @overlay0 !important;
+    --lwc-colorTextInputDisabled: @overlay1 !important;
+    --lwc-colorTextInverse: @base !important;
+    --lwc-colorTextInverseWeak: @mantle !important;
+    --lwc-colorTextIconDefault: @subtext1 !important;
+    --lwc-colorTextIconDefaultHover: @text !important;
+    --lwc-colorTextIconUtility: @subtext1 !important;
+    --lwc-colorTextLink: @accent !important;
+    --lwc-colorTextLinkActive: @blue !important;
+    --lwc-colorTextLinkHover: @blue !important;
+    --lwc-colorTextLinkFocus: @blue !important;
+    --lwc-colorTextHeading: @text !important;
+    --lwc-colorTextHeadingDefault: @text !important;
+    --lwc-colorTextHeadingWeak: @subtext1 !important;
+    --lwc-colorTextActionLabel: @text !important;
+    --lwc-colorTextActionLabelActive: @text !important;
+    --lwc-colorTextRequired: @red !important;
+    --lwc-colorTextError: @red !important;
+    --lwc-colorTextWarning: @yellow !important;
+    --lwc-colorTextSuccess: @green !important;
+    --lwc-colorTextDestructive: @red !important;
+    --lwc-colorTextOnInverse: @text !important;
+    --lwc-colorTextSecondary: @subtext1 !important;
+    --lwc-colorTextTertiary: @subtext0 !important;
+
+    // Brand / accent
+    --lwc-brandPrimary: @accent !important;
+    --lwc-brandPrimaryActive: @blue !important;
+    --lwc-brandPrimaryHover: @blue !important;
+    --lwc-brandPrimaryTransparent: fade(@accent, 30%) !important;
+    --lwc-brandAccessible: @accent !important;
+    --lwc-brandAccessibleActive: @blue !important;
+    --lwc-brandHeader: @mantle !important;
+    --lwc-brandPrimaryDark: @surface0 !important;
+
+    // Borders
+    --lwc-colorBorder: @surface1 !important;
+    --lwc-colorBorderInput: @surface1 !important;
+    --lwc-colorBorderInputDisabled: @surface0 !important;
+    --lwc-colorBorderInverse: @surface2 !important;
+    --lwc-colorBorderSeparator: @surface0 !important;
+    --lwc-colorBorderSeparatorAlt: @surface1 !important;
+    --lwc-colorBorderSeparatorAlt2: @surface2 !important;
+
+    // Newer SLDS 2 tokens (only consumed if Cosmos is enabled, but harmless)
+    --slds-g-color-surface-1: @base !important;
+    --slds-g-color-surface-2: @surface0 !important;
+    --slds-g-color-on-surface-1: @text !important;
+    --slds-g-color-on-surface-2: @text !important;
+    --slds-g-color-accent-1: @accent !important;
+    --slds-g-color-accent-2: @blue !important;
+  }
+
+  /* --------------------------------------------------------------------------
+     Phase 2: per-environment header stripe.
+     Default (prod) stripe = RED — visual caution when you're in production.
+     Sandbox override below changes it to MAUVE.
+     -------------------------------------------------------------------------- */
+  .slds-global-header_container,
+  .desktop.container.oneHeader,
+  header.oneHeader {
+    border-top: 8px solid var(--ctp-red) !important;
+  }
+
+  /* ============================================================================
+     Phase 4 — Speculative SLDS color sweep.
+     Targets documented SLDS class names. Iterate based on what actually breaks.
+     ============================================================================ */
+
+  /* ---- Base page ---- */
+  body,
+  html,
+  .desktop,
+  .oneOne,
+  .oneAppLayoutHost,
+  .viewport {
+    background: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- Global header ---- */
+  .slds-global-header,
+  .slds-global-header_container,
+  header.oneHeader {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-global-header__item input,
+  .slds-global-header__item .slds-input {
+    background: var(--ctp-base) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- Context bar (app tab strip) ---- */
+  .slds-context-bar {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-context-bar__item,
+  .slds-context-bar__label-action {
+    color: var(--ctp-subtext1) !important;
+  }
+  .slds-context-bar__item.slds-is-active {
+    background: var(--ctp-base) !important;
+    border-bottom-color: var(--ctp-accent) !important;
+  }
+  .slds-context-bar__item.slds-is-active .slds-context-bar__label-action {
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- Page header ---- */
+  .slds-page-header {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-page-header__title,
+  .slds-page-header__name {
+    color: var(--ctp-text) !important;
+  }
+  .slds-page-header__meta-text,
+  .slds-page-header__name-meta {
+    color: var(--ctp-subtext1) !important;
+  }
+
+  /* ---- Cards / panels / boxes ---- */
+  .slds-card,
+  .slds-box,
+  .slds-panel,
+  article.slds-card {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-card__header,
+  .slds-card__footer {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-card__header-title,
+  .slds-card__header-link {
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- Headings & body text ---- */
+  .slds-text-heading_large,
+  .slds-text-heading_medium,
+  .slds-text-heading_small,
+  .slds-text-title,
+  .slds-text-title_caps,
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--ctp-text) !important;
+  }
+  .slds-text-body_regular,
+  .slds-text-body_small,
+  .slds-form-element__label,
+  .slds-form-element__help {
+    color: var(--ctp-subtext1) !important;
+  }
+
+  /* ---- Links ---- */
+  a,
+  .slds-text-link,
+  .slds-text-link_reset {
+    color: var(--ctp-accent) !important;
+  }
+  a:hover,
+  .slds-text-link:hover {
+    color: var(--ctp-blue) !important;
+  }
+
+  /* ---- Buttons ---- */
+  .slds-button {
+    color: var(--ctp-accent) !important;
+  }
+  .slds-button:hover,
+  .slds-button:focus {
+    color: var(--ctp-blue) !important;
+  }
+  .slds-button_neutral {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-button_neutral:hover,
+  .slds-button_neutral:focus {
+    background: var(--ctp-surface1) !important;
+    border-color: var(--ctp-surface2) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-button_brand {
+    background: var(--ctp-accent) !important;
+    border-color: var(--ctp-accent) !important;
+    color: var(--ctp-base) !important;
+  }
+  .slds-button_brand:hover,
+  .slds-button_brand:focus {
+    background: var(--ctp-blue) !important;
+    border-color: var(--ctp-blue) !important;
+    color: var(--ctp-base) !important;
+  }
+  .slds-button_destructive {
+    background: var(--ctp-red) !important;
+    border-color: var(--ctp-red) !important;
+    color: var(--ctp-base) !important;
+  }
+  .slds-button_destructive:hover {
+    background: var(--ctp-maroon) !important;
+    border-color: var(--ctp-maroon) !important;
+  }
+  .slds-button_outline-brand {
+    background: transparent !important;
+    border-color: var(--ctp-accent) !important;
+    color: var(--ctp-accent) !important;
+  }
+
+  /* ---- Form inputs ---- */
+  .slds-input,
+  .slds-textarea,
+  .slds-select,
+  .slds-combobox__input,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-input:focus,
+  .slds-textarea:focus,
+  .slds-select:focus,
+  .slds-combobox__input:focus,
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--ctp-accent) !important;
+    box-shadow: 0 0 0 1px var(--ctp-accent) !important;
+  }
+  ::placeholder {
+    color: var(--ctp-overlay0) !important;
+  }
+
+  /* ---- Tables ---- */
+  .slds-table {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .slds-table thead th,
+  .slds-table th {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-subtext1) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .slds-table tbody tr:hover td,
+  .slds-table tbody tr:hover {
+    background: var(--ctp-surface1) !important;
+  }
+  .slds-table td,
+  .slds-table tr {
+    border-color: var(--ctp-surface1) !important;
+  }
+
+  /* ---- Tabs ---- */
+  .slds-tabs_default__nav,
+  .slds-tabs_scoped__nav,
+  .slds-tabs_medium__nav {
+    border-color: var(--ctp-surface1) !important;
+  }
+  .slds-tabs_default__link,
+  .slds-tabs_scoped__link,
+  .slds-tabs_medium__link {
+    color: var(--ctp-subtext1) !important;
+  }
+  .slds-tabs_default__item.slds-is-active,
+  .slds-tabs_scoped__item.slds-is-active,
+  .slds-tabs_medium__item.slds-is-active {
+    border-bottom-color: var(--ctp-accent) !important;
+  }
+  .slds-tabs_default__item.slds-is-active .slds-tabs_default__link,
+  .slds-tabs_scoped__item.slds-is-active .slds-tabs_scoped__link,
+  .slds-tabs_medium__item.slds-is-active .slds-tabs_medium__link {
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- Dropdowns / popovers / modals ---- */
+  .slds-dropdown,
+  .slds-popover,
+  .slds-popover__body,
+  .slds-modal__container,
+  .slds-modal__content,
+  .slds-modal__header,
+  .slds-modal__footer {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-dropdown__item > a,
+  .slds-dropdown__item button {
+    color: var(--ctp-text) !important;
+  }
+  .slds-dropdown__item:hover,
+  .slds-dropdown__item:focus,
+  .slds-has-focus.slds-dropdown__item {
+    background: var(--ctp-surface0) !important;
+  }
+  .slds-modal__close {
+    color: var(--ctp-subtext1) !important;
+  }
+
+  /* ---- Aura popup menus ----
+     The Setup menu, profile menu, and app launcher dropdowns use the Aura
+     .popupTargetContainer / .uiPopupTarget / .uiMenuList stack — distinct
+     from the SLDS .slds-dropdown above. Verified against actual Setup-menu
+     DOM. Without these rules, the dropdown background stays white and the
+     light --ctp-text foreground looks washed out / purplish on it. */
+  .popupTargetContainer.uiPopupTarget,
+  .popupTargetContainer.uiMenuList,
+  .uiPopupTarget.uiMenuList,
+  .uiMenuList--default,
+  .uiMenu.visible,
+  div[data-aura-class*="uiMenuList"],
+  div[data-aura-class*="uiPopupTarget"] {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .popupTargetContainer .menu-header,
+  .uiPopupTarget .menu-header {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .popupTargetContainer .menu-header .header-text,
+  .uiPopupTarget .menu-header .header-text {
+    color: var(--ctp-text) !important;
+  }
+  .popupTargetContainer li.uiMenuItem,
+  .uiPopupTarget li.uiMenuItem,
+  .popupTargetContainer li.onesetupSetupMenuItem,
+  .uiPopupTarget li.onesetupSetupMenuItem {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  .popupTargetContainer li.uiMenuItem:hover,
+  .uiPopupTarget li.uiMenuItem:hover,
+  .popupTargetContainer li.uiMenuItem.related-app,
+  .popupTargetContainer li.uiMenuItem:focus-within,
+  .uiPopupTarget li.uiMenuItem:focus-within {
+    background: var(--ctp-surface0) !important;
+  }
+  /* Menu item links: navigation, not "click-me" links. Keep them at text
+     color, not accent — otherwise every menu becomes a wall of purple. */
+  .popupTargetContainer li.uiMenuItem > a,
+  .uiPopupTarget li.uiMenuItem > a,
+  .popupTargetContainer li.uiMenuItem a[role="menuitem"],
+  .uiPopupTarget li.uiMenuItem a[role="menuitem"] {
+    color: var(--ctp-text) !important;
+    background: transparent !important;
+  }
+  .popupTargetContainer li.uiMenuItem > a:hover,
+  .uiPopupTarget li.uiMenuItem > a:hover {
+    color: var(--ctp-text) !important;
+  }
+  /* Menu item sub-labels ("Setup for current app") */
+  .popupTargetContainer .slds-form-element__label.inline-help,
+  .uiPopupTarget .slds-form-element__label.inline-help {
+    color: var(--ctp-subtext1) !important;
+  }
+  /* Divider lines between menu sections */
+  .popupTargetContainer li[role="separator"],
+  .uiPopupTarget li[role="separator"],
+  .slds-has-divider--top-space {
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Close-button in menu header */
+  .popupTargetContainer .menu-header .close-button,
+  .uiPopupTarget .menu-header .close-button {
+    color: var(--ctp-subtext1) !important;
+  }
+  .popupTargetContainer .menu-header .close-button:hover,
+  .uiPopupTarget .menu-header .close-button:hover {
+    color: var(--ctp-text) !important;
+  }
+  /* Nubbin (the little pointer arrow on top of menus). Aura uses :before
+     and :after pseudos to draw the triangle. */
+  .popupTargetContainer.menu--nubbin-top::before {
+    border-bottom-color: var(--ctp-surface1) !important;
+  }
+  .popupTargetContainer.menu--nubbin-top::after {
+    border-bottom-color: var(--ctp-mantle) !important;
+  }
+
+  /* ---- Toasts / notifications ---- */
+  .slds-notify_toast {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .slds-notify_toast.slds-theme_success {
+    background: var(--ctp-green) !important;
+    color: var(--ctp-base) !important;
+  }
+  .slds-notify_toast.slds-theme_warning {
+    background: var(--ctp-yellow) !important;
+    color: var(--ctp-base) !important;
+  }
+  .slds-notify_toast.slds-theme_error {
+    background: var(--ctp-red) !important;
+    color: var(--ctp-base) !important;
+  }
+  .slds-notify_toast.slds-theme_info {
+    background: var(--ctp-blue) !important;
+    color: var(--ctp-base) !important;
+  }
+
+  /* ---- Badges / pills ---- */
+  .slds-badge {
+    background: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-badge_inverse {
+    background: var(--ctp-surface2) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-pill {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- Borders / dividers ---- */
+  .slds-border_top,
+  .slds-border_bottom,
+  .slds-border_left,
+  .slds-border_right,
+  .slds-has-divider_top,
+  .slds-has-divider_bottom {
+    border-color: var(--ctp-surface1) !important;
+  }
+
+  /* ---- Setup pages ----
+     Setup is /lightning/setup/* on the same domain. Different wrapper classes
+     than normal Lightning pages, so explicit selectors here. Legacy Setup
+     pages (older Classic UI) sometimes embed in iframes — those won't be
+     reached by this @-moz-document and would need their own block. */
+  .setup-container,
+  .setupcontent,
+  .setupContent,
+  .setupTab,
+  .setupRoot,
+  .setupcontent-body,
+  .setup-content,
+  .windowViewMode-maximized,
+  .oneAppLayoutContainer,
+  .applicationBody,
+  .appBodyContainer,
+  .appContainer {
+    background: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+  }
+  .setupcontent .bRelatedList,
+  .setupcontent .pbBody,
+  .setupcontent .pbHeader,
+  .setupcontent .listViewport,
+  .bodyDiv {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Setup tree (left nav) */
+  .setup-tree,
+  .setup-tree-list,
+  .setupcontent .setup-tree {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  .setup-tree-item,
+  .setup-tree-item a {
+    color: var(--ctp-subtext1) !important;
+  }
+  .setup-tree-item:hover,
+  .setup-tree-item:hover a {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+  .setup-tree-item.selected,
+  .setup-tree-item.selected a {
+    background: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* Legacy Setup pbody panels (the old setup chrome wraps tables in pb* classes) */
+  .pbBody, .pbHeader, .pbFooter, .pbSubsection, .pbSubheader,
+  .listViewport, .bRelatedList, .bPageBlock {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+
+  /* ---- Salesforce dashboards (verified against actual DOM) ----
+     Class names harvested from the live HTML rather than guessed. Salesforce
+     dashboards render chart text into <canvas>, which CSS cannot recolor —
+     axis labels, legends, and data values inside charts will remain in the
+     chart library's default color. Only HTML text around the charts is
+     themeable here. */
+
+  /* Outer dashboard wrapper. Has inline background-color set, but no inline
+     !important, so our !important wins. */
+  .grid-layout,
+  .dashboardHeader,
+  .widget-grid,
+  .grid,
+  .widgets {
+    background: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* Individual widget containers + the card article */
+  .widget-container,
+  .widget,
+  article.dashGridItem,
+  article.dashGridItem.slds-card {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+
+  /* Card titles and subtitles ("Top Content Viewing By Type", "Top 25") */
+  .defaultHeading,
+  .defaultHeading h2,
+  .gridHeader,
+  .gridTitle {
+    color: var(--ctp-text) !important;
+    background: transparent !important;
+  }
+
+  /* Card footer ("Last 120 Days", refresh timestamp, View Report link) */
+  .gridFooter,
+  .footerWrapper,
+  .gridFooter .footer,
+  .gridFooter .truncation,
+  .cmpRefreshTimeColor {
+    color: var(--ctp-subtext1) !important;
+    background: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .gridFooter a.enabledLink,
+  .reportLinkWrapper a {
+    color: var(--ctp-accent) !important;
+  }
+  .gridFooter a.enabledLink:hover {
+    color: var(--ctp-blue) !important;
+  }
+
+  /* "No data" and component-error inline messages */
+  .noDataMessage {
+    color: var(--ctp-subtext1) !important;
+    background: transparent !important;
+  }
+  .componentError {
+    color: var(--ctp-red) !important;
+    background: transparent !important;
+  }
+
+  /* Page header metadata block (dashboard description, last-refreshed, etc.)
+     The actual HTML uses .info / .detail / .lastRefreshDate / .runningUserName
+     wrappers, not the .slds-page-header__meta-text I guessed earlier. */
+  .dashboardHeader .info,
+  .dashboardHeader .detail,
+  .dashboardHeader .lastRefreshDate,
+  .dashboardHeader .lastRefreshDetail,
+  .dashboardHeader .runningUserName,
+  .dashboardHeader .slds-page-header__info,
+  .numberOfDaysSinceLastRefresh {
+    color: var(--ctp-subtext1) !important;
+  }
+  .numberOfDaysSinceLastRefresh {
+    color: var(--ctp-yellow) !important;
+  }
+
+  /* Page header h1 — "Dashboard" / "CMS Home" — bare <span>s inherit, but
+     forcing on the h1 covers all descendants. */
+  .slds-page-header__name-title h1,
+  .slds-page-header__name-title h1 span {
+    color: var(--ctp-text) !important;
+  }
+
+  /* Canvas-rendered chart text cannot be recolored via CSS. The chart canvas
+     itself is transparent, so the surface0 card background shows through.
+     If chart text becomes truly unreadable, the nuclear workaround is to
+     filter:invert(1) hue-rotate(180deg) on .canvas-wrapper — but that also
+     inverts the colored chart bars, which usually looks worse than dark text
+     on dark surface. Leaving it off by default. */
+
+  /* ---- Catch-all for SLDS heading/title/body text that may have hardcoded
+     colors in custom components (not consuming the --lwc-* tokens). ---- */
+  .slds-card__header-title,
+  .slds-card__header-title a,
+  .slds-card__header-link {
+    color: var(--ctp-text) !important;
+  }
+  .slds-text-heading_large,
+  .slds-text-heading_medium,
+  .slds-text-heading_small,
+  .slds-text-title,
+  .slds-text-title_caps,
+  .slds-text-title_bold {
+    color: var(--ctp-text) !important;
+  }
+  .slds-form-element__label,
+  .slds-form-element__help,
+  .slds-text-body_small,
+  .slds-text-color_weak,
+  .slds-text-color_default {
+    color: var(--ctp-subtext1) !important;
+  }
+  .uiOutputText,
+  .uiOutputDateTime,
+  .uiOutputNumber,
+  .uiOutputCurrency,
+  .uiOutputRichText {
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- Scrollbars (webkit) ---- */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--ctp-mantle);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--ctp-surface1);
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--ctp-surface2);
+  }
+}
+
+/* ============================================================================
+   SANDBOX OVERRIDE — fires only on *.sandbox.lightning.force.com URLs.
+   Overrides just the header stripe color so prod and sandboxes are visually
+   distinct. All other theme rules inherit from the base block above.
+   ============================================================================ */
+@-moz-document regexp("https:\/\/[^\/]+\.sandbox\.lightning\.force\.com\/.*"),
+               regexp("https:\/\/[^\/]+\.sandbox\.my\.salesforce-setup\.com\/.*") {
+  .slds-global-header_container,
+  .desktop.container.oneHeader,
+  header.oneHeader {
+    border-top-color: var(--ctp-mauve) !important;
+  }
+}
