@@ -1,9 +1,25 @@
 /* ==UserStyle==
 @name           Agility - Catppuccin Mocha
 @namespace      github.com/catppuccin
-@version        0.2.0
+@version        0.3.0
 @description    Catppuccin Mocha theme for Digital.ai Agility
 @author         you
+@var            select accent "Accent color" {
+  "Rosewater":   "#f5e0dc",
+  "Flamingo":    "#f2cdcd",
+  "Pink":        "#f5c2e7",
+  "Mauve*":      "#cba6f7",
+  "Red":         "#f38ba8",
+  "Maroon":      "#eba0ac",
+  "Peach":       "#fab387",
+  "Yellow":      "#f9e2af",
+  "Green":       "#a6e3a1",
+  "Teal":        "#94e2d5",
+  "Sky":         "#89dceb",
+  "Sapphire":    "#74c7ec",
+  "Blue":        "#89b4fa",
+  "Lavender":    "#b4befe"
+}
 ==/UserStyle== */
 
 @-moz-document regexp("https://www[0-9]+\\.agility\\.us\\.digital\\.ai/.*") {
@@ -31,6 +47,10 @@
     --ctp-green:     #a6e3a1;
     --ctp-teal:      #94e2d5;
     --ctp-sapphire:  #74c7ec;
+
+    /* User-selectable accent (Stylus settings > Configure). Used for the
+       bright borders on highlight elements like the qtip hover card. */
+    --ctp-accent: /*[[accent]]*/;
 
     color-scheme: dark;
   }
@@ -108,6 +128,24 @@
   [class*="BoardCell"], [class*="boardCell"] {
     background-color: var(--ctp-base) !important;
     border: 1px solid var(--ctp-surface0) !important;
+  }
+
+  /* Empty storyboard ("No Results To Display") — Agility paints this band green
+     via .filterable-gadget. Also catch the footer strip. */
+  .filterable-gadget,
+  .gadget.StoryBoard .wrapper,
+  .gadget.StoryBoard .gadgetbox,
+  .gadget.StoryBoard .no-results,
+  .gadget.StoryBoard .footer,
+  .gadget.StoryBoard .footer td,
+  .gadget.StoryBoard .footer .l,
+  .gadget.StoryBoard .footer .foot,
+  .gadget.StoryBoard .footer .c,
+  .gadget.StoryBoard .footer .r {
+    background-color: var(--ctp-base) !important;
+    background-image: none !important;
+    border-color: var(--ctp-surface0) !important;
+    color: var(--ctp-subtext0) !important;
   }
 
   /* The story cards themselves */
@@ -1351,6 +1389,50 @@
     background-color: var(--ctp-crust) !important;
     color: var(--ctp-text) !important;
     border: 1px solid var(--ctp-surface1) !important;
+  }
+
+  /* qtip2 asset-hover popup (the card preview that appears on storyboard
+     hover). qtip2 ships its own stylesheet with a green border and white
+     content area, so target the specific classes. */
+  .qtip,
+  .qtip-default,
+  .ui-tooltip,
+  .ui-tooltip-asset-hover {
+    background-color: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+    border: 2px solid var(--ctp-accent) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+  }
+  .qtip-titlebar,
+  .ui-tooltip-asset-hover .qtip-titlebar {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-bottom: 1px solid var(--ctp-surface1) !important;
+  }
+  .qtip-title,
+  .qtip-titlebar a,
+  .qtip-titlebar .qtip-title {
+    color: var(--ctp-blue) !important;
+  }
+  .qtip-content,
+  .ui-tooltip-asset-hover .qtip-content {
+    background-color: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  .qtip-content a,
+  .qtip-content .asset-name-link {
+    color: var(--ctp-blue) !important;
+  }
+  .qtip-close,
+  .qtip-icon {
+    color: var(--ctp-subtext0) !important;
+    background-color: transparent !important;
+  }
+  .qtip-close:hover { color: var(--ctp-text) !important; }
+  /* The little arrow/tip that points back to the source card */
+  .qtip-tip,
+  .qtip-tip canvas {
+    background-color: transparent !important;
   }
 
   /* ============ Scrollbars ============ */
@@ -2821,6 +2903,188 @@
     color: var(--ctp-text) !important;
     border: 1px solid var(--ctp-surface2) !important;
   }
+
+  /* ============ Add New Story / Defect / Task modal ============
+     Different chrome than QuickEdit: uses `.floating.new-story > .v1-dialog`
+     with a `.titlerow` h1, then `<table class="detail">` containing
+     `<table class="pane">` panes, with `<tr class="detail">` rows and
+     `td.l` / `td.r.value` cells. The inner widgets (.dropdown.svdropdown,
+     .lookup, .tox-tinymce) inherit the global theming. */
+
+  /* Outer floating dialog and inner v1-dialog container */
+  .floating.new-story,
+  .floating .v1-dialog,
+  .v1-dialog,
+  .v1-dialog .gadget.Detail,
+  .v1-dialog .gadgetbox,
+  .v1-dialog .new-story,
+  .v1-dialog table.detail,
+  .v1-dialog table.detail > tbody > tr > td,
+  .v1-dialog table.pane,
+  .v1-dialog table.pane > tbody > tr,
+  .v1-dialog table.pane td {
+    background-color: var(--ctp-base) !important;
+    background-image: none !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface0) !important;
+  }
+  .floating.new-story {
+    border: 1px solid var(--ctp-surface1) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    border-radius: 6px !important;
+  }
+  /* Title bar with the "Story" h1 + Save/Save&New/Save&View/Cancel buttons */
+  .v1-dialog h1.titlerow,
+  .v1-dialog .titlerow {
+    background-color: var(--ctp-mantle) !important;
+    background-image: none !important;
+    color: var(--ctp-text) !important;
+    border-bottom: 1px solid var(--ctp-surface0) !important;
+  }
+  .v1-dialog .titlerow .title { color: var(--ctp-text) !important; }
+  .v1-dialog .buttoncontainer.dialog-bottom { background: transparent !important; }
+
+  /* Label column ("Title:", "Planning Level:", etc.) — left side cells. */
+  .v1-dialog table.pane td.l,
+  .v1-dialog table.pane .AttributeLabel {
+    background: transparent !important;
+    color: var(--ctp-subtext1) !important;
+  }
+  .v1-dialog .AttributeLabel .error { color: var(--ctp-red) !important; }
+  .v1-dialog .AttributeLabel .important .svg-icon {
+    fill: var(--ctp-yellow) !important;
+  }
+  /* Value column — right side cells holding the input/widget */
+  .v1-dialog table.pane td.r,
+  .v1-dialog table.pane td.r.value {
+    background: transparent !important;
+  }
+  /* Row dividers between fields */
+  .v1-dialog table.pane tr.detail,
+  .v1-dialog table.pane tr.detail > td {
+    border-color: var(--ctp-surface0) !important;
+  }
+
+  /* Footer with Save / Save & New / Cancel — bottom of the dialog */
+  .v1-dialog .footer,
+  .v1-dialog .footer .end {
+    background: transparent !important;
+    border-top: 1px solid var(--ctp-surface0) !important;
+  }
+
+  /* Inputs inside the new-story modal — same single-border treatment as
+     QuickEdit, since input.text has the same green border by default */
+  .v1-dialog input.text,
+  .v1-dialog input[type="text"],
+  .v1-dialog textarea,
+  .v1-dialog textarea.textarea {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 4px !important;
+  }
+  .v1-dialog input.text:focus,
+  .v1-dialog input[type="text"]:focus,
+  .v1-dialog textarea:focus {
+    border-color: var(--ctp-blue) !important;
+    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.25) !important;
+  }
+  .v1-dialog input.text:hover,
+  .v1-dialog input[type="text"]:hover,
+  .v1-dialog textarea:hover {
+    border-color: var(--ctp-surface2) !important;
+  }
+
+  /* Apply the QuickEdit dropdown height/padding/centering work to the new-story
+     dropdowns too (same .dropdown.svdropdown structure inside the modal). */
+  .v1-dialog .dropdown.svdropdown,
+  .v1-dialog .autocomplete-dropdown.svdropdown {
+    background-color: var(--ctp-surface0) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+    border-radius: 9999px !important;
+    color: var(--ctp-text) !important;
+    box-sizing: border-box !important;
+    height: 26px !important;
+    padding: 0 !important;
+  }
+  .v1-dialog .dropdown.svdropdown:focus-within,
+  .v1-dialog .autocomplete-dropdown.svdropdown:focus-within {
+    border-color: var(--ctp-blue) !important;
+  }
+  .v1-dialog .dropdown.svdropdown .dd-container,
+  .v1-dialog .dropdown.svdropdown .dd-table,
+  .v1-dialog .autocomplete-dropdown.svdropdown .dd-container {
+    height: 100% !important;
+    margin: 0 !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .v1-dialog .dropdown.svdropdown .dd-container tr,
+  .v1-dialog .dropdown.svdropdown .dd-container td,
+  .v1-dialog .dropdown.svdropdown .ddtext,
+  .v1-dialog .dropdown.svdropdown .ddbutton,
+  .v1-dialog .autocomplete-dropdown.svdropdown .dd-container td {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    vertical-align: middle !important;
+    line-height: 1 !important;
+  }
+  .v1-dialog .dropdown.svdropdown .ddtext { padding-left: 10px !important; }
+  .v1-dialog .dropdown.svdropdown .ddbutton { padding-right: 6px !important; }
+  .v1-dialog .dropdown.svdropdown .ddtext a,
+  .v1-dialog .dropdown.svdropdown .ddtext span {
+    display: inline-block !important;
+    line-height: 24px !important;
+    vertical-align: middle !important;
+    background: transparent !important;
+    text-decoration: none !important;
+    color: var(--ctp-text) !important;
+  }
+  .v1-dialog .dropdown.svdropdown .dropdownbutton {
+    color: var(--ctp-subtext0) !important;
+    background-color: transparent !important;
+  }
+  .v1-dialog .dropdown.svdropdown .dropdownbutton:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  /* Autocomplete text input inside Planning Level dropdown should look like
+     the other inputs (transparent so the pill's bg shows through) */
+  .v1-dialog .autocomplete-dropdown.svdropdown input.ui-autocomplete-input,
+  .v1-dialog .autocomplete-dropdown.svdropdown input.text {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: var(--ctp-text) !important;
+    padding: 0 10px !important;
+    line-height: 24px !important;
+    height: 24px !important;
+  }
+
+  /* Lookup pills (Team, Portfolio Item, Owners, Customer) inside the modal */
+  .v1-dialog .lookup,
+  .v1-dialog .lookup.single,
+  .v1-dialog .lookup.multi,
+  .v1-dialog .lookup.has-selection {
+    background-color: var(--ctp-surface0) !important;
+    border: 1px solid var(--ctp-surface2) !important;
+    border-radius: 9999px !important;
+    color: var(--ctp-text) !important;
+  }
+  .v1-dialog .lookup .items li.item {
+    background-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface2) !important;
+  }
+  .v1-dialog .lookup .items li.item .name { color: var(--ctp-text) !important; }
+  .v1-dialog .lookup .items li.item .remove { color: var(--ctp-subtext0) !important; }
+  .v1-dialog .lookup .items li.item .remove:hover { color: var(--ctp-red) !important; }
 
   /* Asset lookup popup (Owners, Team, Portfolio Item search dropdown).
      Rendered as a positioned <dl class="results"> outside the form, with
