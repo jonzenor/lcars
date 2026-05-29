@@ -2,7 +2,7 @@
 @name           Salesforce Catppuccin
 @namespace      github.com/jonzenor/lcars/Stylus/salesforce
 @homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/salesforce
-@version        0.1.8
+@version        0.1.13
 @updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/salesforce/catppuccin.user.less
 @supportURL     https://github.com/jonzenor/lcars/issues
 @description    Soothing pastel theme for Salesforce Lightning Experience, with a distinct header stripe color for sandboxes so you always know which environment you're in at a glance.
@@ -29,7 +29,8 @@
    Reference var(--ctp-*) directly throughout; never alias.
    ============================================================================ */
 @-moz-document regexp("https:\/\/[^\/]+\.lightning\.force\.com\/.*"),
-               regexp("https:\/\/[^\/]+\.my\.salesforce-setup\.com\/.*") {
+               regexp("https:\/\/[^\/]+\.my\.salesforce-setup\.com\/.*"),
+               regexp("https:\/\/[^\/]+\.my\.salesforce\.com\/.*") {
   :root {
     // #lib.palette() takes no args — it reads @flavor and @accentColor from
     // scope (the Stylus @var declarations inject them as Less variables).
@@ -823,6 +824,396 @@
     border-color: var(--ctp-surface1) !important;
   }
 
+  /* ---- Aloha iframe wrappers ----
+     Legacy Setup pages embed in iframes hosted inside .oneAlohaPage /
+     <force-aloha-page>. The wrappers themselves render with white bg by
+     default; theming them so the area around/behind the iframe matches. */
+  .oneAlohaPage,
+  force-aloha-page,
+  .content.iframe-parent,
+  .iframe-parent {
+    background: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- Lightning Console utility bar (bottom footer strip) ----
+     The horizontal action strip at the bottom of Console layouts —
+     Macros, Notes, History, Omni-Channel, Phone, etc. Verified against
+     live utility-bar DOM: ul.utilitybar.slds-utility-bar with
+     li.slds-utility-bar__item children wrapping uiButton triggers. */
+  ul.utilitybar,
+  ul.slds-utility-bar,
+  ul.utilitybar.slds-utility-bar {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  li.slds-utility-bar__item,
+  .slds-utility-bar__item,
+  .oneUtilityBarItem,
+  .slds-utility-bar__item.oneUtilityBarItem {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* The clickable utility-bar buttons. My broader .slds-button rule sets
+     accent color; override here so the strip reads as chrome (text) not
+     a row of accent-colored links. */
+  button.slds-utility-bar__action,
+  button.utilityBarButton,
+  .slds-utility-bar__item button.uiButton,
+  .slds-utility-bar__item button.slds-button {
+    background: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  button.slds-utility-bar__action:hover,
+  button.utilityBarButton:hover,
+  .slds-utility-bar__item button:hover {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* Labels and tooltips inside utility-bar items */
+  .slds-utility-bar__text,
+  .slds-utility-bar__text_reflow,
+  .slds-utility-bar__item .itemTitle {
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- Setup left-nav tree ----
+     The Setup sidebar is .slds-tree_container.onesetupSetupNavTree with
+     .slds-theme_default applying white background. Nav items are
+     <li class="onesetupNavTreeNode setup-tree-node"> wrapping a
+     .slds-tree__item div, with section headers as a separate variant
+     (li.section-header > h4). Verified against actual Setup sidebar DOM. */
+  .lafPageHost,
+  .windowViewMode-maximized.lafPageHost,
+  .slds-tree_container.onesetupSetupNavTree,
+  .onesetupSetupNavTree,
+  .slds-tree_container.slds-theme_default,
+  .slds-tree_container {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* Override SLDS's .slds-theme_default light theme directly — it sets bg
+     and color on whatever element it's applied to */
+  .slds-theme_default {
+    background-color: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* And SLDS's text-color_default utility that's sprinkled on tree links */
+  .slds-text-color_default {
+    color: var(--ctp-text) !important;
+  }
+
+  /* Quick Find filter input at top of nav */
+  .onesetupNavTreeFilter,
+  .tree-filter.onesetupNavTreeFilter {
+    background: transparent !important;
+  }
+  .onesetupNavTreeFilter .slds-input,
+  .onesetupNavTreeFilter input[type="search"],
+  .tree-filter .slds-input,
+  .tree-filter input.input {
+    background: var(--ctp-base) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* Tree itself + nodes */
+  ul.slds-tree.setup-tree,
+  ul.setup-tree {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  li.onesetupNavTreeNode,
+  li.setup-tree-node,
+  li.tree-node {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* The tree-item row (the wrapper that highlights on hover) */
+  .onesetupNavTreeNode .slds-tree__item,
+  .setup-tree-node .slds-tree__item,
+  .slds-tree__item {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  /* Hover — was white, the actual fix */
+  li.onesetupNavTreeNode:hover > .slds-tree__item,
+  li.setup-tree-node:hover > .slds-tree__item,
+  .onesetupNavTreeNode .slds-tree__item:hover,
+  .setup-tree-node .slds-tree__item:hover,
+  .slds-tree__item:hover {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* Tree item link (the actual nav text) */
+  a.slds-tree__item-label,
+  .slds-tree__item-label,
+  .slds-tree__item-label.slds-text-color_default {
+    color: var(--ctp-text) !important;
+    background: transparent !important;
+  }
+  a.slds-tree__item-label:hover,
+  .slds-tree__item-label:hover {
+    color: var(--ctp-text) !important;
+  }
+
+  /* Selected nav item (the currently-active page) gets an accent left border
+     to read as the highlighted item without screaming */
+  li.onesetupNavTreeNode[data-selected="autoselected"] > .slds-tree__item,
+  li.setup-tree-node[data-selected="autoselected"] > .slds-tree__item,
+  li.onesetupNavTreeNode[aria-selected="true"] > .slds-tree__item,
+  li.setup-tree-node[aria-selected="true"] > .slds-tree__item {
+    background: var(--ctp-surface0) !important;
+    border-left: 3px solid var(--ctp-accent) !important;
+  }
+
+  /* Section headers — "Administration", "Platform Tools", "Settings".
+     These are non-clickable label rows; muted them so the clickable items
+     are visually dominant. */
+  li.onesetupNavTreeNode.section-header,
+  li.setup-tree-node.section-header,
+  li.section-header {
+    background: transparent !important;
+  }
+  li.section-header h4,
+  li.section-header .slds-text-title_caps {
+    color: var(--ctp-subtext0) !important;
+  }
+  /* Don't apply the standard tree-item hover to section headers — they
+     aren't actionable */
+  li.section-header:hover > .slds-tree__item,
+  li.section-header:hover {
+    background: transparent !important;
+  }
+
+  /* Expand-chevron buttons inside parent nodes (Users, Data, Email, etc.) */
+  li.onesetupNavTreeNode.parent button.slds-button_icon-bare,
+  li.setup-tree-node.parent button.slds-button_icon-bare,
+  .setup-tree button.slds-button_icon-bare {
+    background: transparent !important;
+    color: var(--ctp-subtext1) !important;
+  }
+
+  /* ---- Legacy Setup detail pages ----
+     Pages like an individual Auth Provider, custom setting record, etc.
+     use a different DOM than the list pages: .bPageBlock > .pbHeader /
+     .pbBody / .pbFooter, with .detailList tables inside. Verified against
+     live Auth Provider detail-page DOM. */
+  .bPageBlock,
+  .bDetailBlock,
+  .brandSecondaryBrd,
+  .secondaryPalette {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .pbHeader,
+  .pbHeader table {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .mainTitle,
+  .pbHeader .mainTitle,
+  .pbTitle h2.mainTitle,
+  .pbTitle h2 {
+    color: var(--ctp-text) !important;
+  }
+  .pbFooter,
+  .pbFooter.secondaryPalette,
+  .pbBottomButtons {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .pbFooter .bg {
+    background: transparent !important;
+  }
+  /* Subsection headers within detail pages ("Salesforce Configuration",
+     "Experience Cloud Sites", etc.) */
+  .pbSubheader,
+  .brandTertiaryBrd.pbSubheader,
+  .pbSubheader.tertiaryPalette,
+  .brandTertiaryBrd,
+  .tertiaryPalette {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .pbSubheader h3 {
+    color: var(--ctp-text) !important;
+  }
+  .titleSeparatingColon {
+    color: var(--ctp-subtext1) !important;
+  }
+  /* Detail-list label/data cells. Labels muted, values light. */
+  table.detailList,
+  .pbSubsection table.detailList {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table.detailList .labelCol,
+  table.detailList td.labelCol,
+  table.detailList .last.labelCol {
+    color: var(--ctp-subtext1) !important;
+    background: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table.detailList .data2Col,
+  table.detailList .dataCol,
+  table.detailList td.data2Col,
+  table.detailList td.dataCol,
+  table.detailList .last.data2Col,
+  table.detailList .last.dataCol {
+    color: var(--ctp-text) !important;
+    background: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table.detailList .data2Col a,
+  table.detailList .dataCol a {
+    color: var(--ctp-accent) !important;
+  }
+  table.detailList .data2Col a:hover,
+  table.detailList .dataCol a:hover {
+    color: var(--ctp-blue) !important;
+  }
+  /* Row dividers between detail-list rows */
+  table.detailList tr,
+  table.detailList tr td,
+  table.detailList tr th {
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Special "Site Name: ..." sub-divider rows in Experience Cloud Sites
+     section, and other detail row separators */
+  table.detailList .detailRow,
+  table.detailList .detailRow td,
+  table.detailList .detailRow div {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+    font-weight: 600 !important;
+  }
+  /* Empty cells (the &nbsp; spacer rows) should be invisible — no extra
+     borders adding visual weight */
+  table.detailList .labelCol.empty,
+  table.detailList .dataCol.empty {
+    background: transparent !important;
+    border-color: transparent !important;
+  }
+  /* Legacy form buttons (Edit, Delete, Clone, Save, Cancel) */
+  input.btn,
+  button.btn,
+  input[type="button"].btn,
+  input[type="submit"].btn {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface2) !important;
+    color: var(--ctp-text) !important;
+  }
+  input.btn:hover,
+  button.btn:hover,
+  input[type="button"].btn:hover,
+  input[type="submit"].btn:hover {
+    background: var(--ctp-surface1) !important;
+    border-color: var(--ctp-accent) !important;
+  }
+
+  /* ---- Legacy Setup list tables ----
+     Pages like Auth Providers, Permission Sets, Custom Settings detail use
+     the older table.list / .dataRow / .dataCell DOM (predates SLDS). These
+     pages often live in iframes on the *.my.salesforce.com domain — see
+     the @-moz-document regex extension at the top of this file. */
+  table.list {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table.list .headerRow,
+  table.list .headerRow th,
+  table.list tr.headerRow > th {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table.list .headerRow a,
+  table.list .headerRow th a {
+    color: var(--ctp-text) !important;
+  }
+  table.list .headerRow .zen-deemphasize,
+  table.list .headerRow .zen-deemphasize a {
+    color: var(--ctp-subtext1) !important;
+  }
+  /* Even/odd data row backgrounds — alternate base and surface0 for legibility */
+  table.list .dataRow,
+  table.list .dataRow > td,
+  table.list .dataRow > th,
+  table.list .dataRow.even,
+  table.list .dataRow.even > td,
+  table.list .dataRow.even > th {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table.list .dataRow.odd,
+  table.list .dataRow.odd > td,
+  table.list .dataRow.odd > th {
+    background: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+  }
+  table.list .dataRow:hover,
+  table.list .dataRow:hover > td,
+  table.list .dataRow:hover > th {
+    background: var(--ctp-surface1) !important;
+  }
+  /* Cell content text (Provider Type, Created Date, etc.) */
+  table.list .dataCell,
+  table.list td.dataCell,
+  table.list th.dataCell {
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Action column (Edit | Del links) */
+  table.list .actionColumn,
+  table.list td.actionColumn,
+  table.list th.actionColumn {
+    color: var(--ctp-subtext1) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  a.actionLink {
+    color: var(--ctp-accent) !important;
+  }
+  a.actionLink:hover {
+    color: var(--ctp-blue) !important;
+  }
+  /* Links inside table cells (Name and URL Suffix columns navigate to records) */
+  table.list .dataRow a,
+  table.list .dataCell a {
+    color: var(--ctp-accent) !important;
+  }
+  table.list .dataRow a:hover,
+  table.list .dataCell a:hover {
+    color: var(--ctp-blue) !important;
+  }
+  /* "Show me fewer/more records per list page" footer */
+  .fewerMore {
+    color: var(--ctp-subtext1) !important;
+  }
+  .fewerMore a {
+    color: var(--ctp-accent) !important;
+  }
+  /* Alphabetical filter strip (A | B | C ...) at top of list pages */
+  .listLinks,
+  .filter-links,
+  .pipe {
+    color: var(--ctp-subtext1) !important;
+  }
+
   /* ---- Salesforce dashboards (verified against actual DOM) ----
      Class names harvested from the live HTML rather than guessed. Salesforce
      dashboards render chart text into <canvas>, which CSS cannot recolor —
@@ -971,7 +1362,8 @@
    distinct. All other theme rules inherit from the base block above.
    ============================================================================ */
 @-moz-document regexp("https:\/\/[^\/]+\.sandbox\.lightning\.force\.com\/.*"),
-               regexp("https:\/\/[^\/]+\.sandbox\.my\.salesforce-setup\.com\/.*") {
+               regexp("https:\/\/[^\/]+\.sandbox\.my\.salesforce-setup\.com\/.*"),
+               regexp("https:\/\/[^\/]+\.sandbox\.my\.salesforce\.com\/.*") {
   .slds-global-header_container,
   .desktop.container.oneHeader,
   header.oneHeader {
