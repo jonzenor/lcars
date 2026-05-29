@@ -2,7 +2,7 @@
 @name           Salesforce Catppuccin
 @namespace      github.com/jonzenor/lcars/Stylus/salesforce
 @homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/salesforce
-@version        0.1.2
+@version        0.1.8
 @updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/salesforce/catppuccin.user.less
 @supportURL     https://github.com/jonzenor/lcars/issues
 @description    Soothing pastel theme for Salesforce Lightning Experience, with a distinct header stripe color for sandboxes so you always know which environment you're in at a glance.
@@ -130,6 +130,35 @@
     --slds-g-color-on-surface-2: @text !important;
     --slds-g-color-accent-1: @accent !important;
     --slds-g-color-accent-2: @blue !important;
+
+    // SLDS component-level tokens (--slds-c-*). These cross shadow DOM via
+    // inheritance, so they reach inside LWC components that consume them
+    // without us having to win specificity wars on individual selectors.
+    // Sections in particular were stuck on white headers because Salesforce
+    // ships .slds-section__title[lwc-XXX] scoped rules that outranked our
+    // unscoped class selector.
+    --slds-c-section-color-background: @surface0 !important;
+    --slds-c-section-color-foreground: @text !important;
+    --slds-c-section-title-color-background: @mantle !important;
+    --slds-c-section-title-color-background-hover: @surface0 !important;
+    --slds-c-section-title-color-foreground: @text !important;
+    --slds-c-section-title-color-foreground-hover: @text !important;
+    --slds-c-card-color-background: @surface0 !important;
+    --slds-c-card-color-border: @surface1 !important;
+    --slds-c-card-color-foreground: @text !important;
+    --slds-c-card-header-color-background: @mantle !important;
+    --slds-c-card-header-color-foreground: @text !important;
+    --slds-c-input-color-background: @mantle !important;
+    --slds-c-input-color-border: @surface1 !important;
+    --slds-c-input-text-color: @text !important;
+    --slds-c-button-color-background: @surface0 !important;
+    --slds-c-button-color-border: @surface1 !important;
+    --slds-c-button-text-color: @text !important;
+    --slds-c-button-brand-color-background: @accent !important;
+    --slds-c-button-brand-color-border: @accent !important;
+    --slds-c-button-brand-text-color: @base !important;
+    --slds-c-icon-color-foreground: @text !important;
+    --slds-c-icon-color-foreground-default: @subtext1 !important;
   }
 
   /* --------------------------------------------------------------------------
@@ -351,26 +380,98 @@
     border-color: var(--ctp-surface1) !important;
   }
 
-  /* ---- Tabs ---- */
+  /* ---- Tabs (SLDS standard tab variants) ---- */
+  .slds-tabs_card,
+  .slds-tabs_default,
+  .slds-tabs_scoped,
+  .slds-tabs_medium {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
   .slds-tabs_default__nav,
   .slds-tabs_scoped__nav,
   .slds-tabs_medium__nav {
+    background: var(--ctp-mantle) !important;
     border-color: var(--ctp-surface1) !important;
+  }
+  .slds-tabs_default__item,
+  .slds-tabs_scoped__item,
+  .slds-tabs_medium__item {
+    background: transparent !important;
   }
   .slds-tabs_default__link,
   .slds-tabs_scoped__link,
   .slds-tabs_medium__link {
     color: var(--ctp-subtext1) !important;
+    background: transparent !important;
   }
   .slds-tabs_default__item.slds-is-active,
   .slds-tabs_scoped__item.slds-is-active,
   .slds-tabs_medium__item.slds-is-active {
+    background: var(--ctp-base) !important;
     border-bottom-color: var(--ctp-accent) !important;
   }
   .slds-tabs_default__item.slds-is-active .slds-tabs_default__link,
   .slds-tabs_scoped__item.slds-is-active .slds-tabs_scoped__link,
   .slds-tabs_medium__item.slds-is-active .slds-tabs_medium__link {
     color: var(--ctp-text) !important;
+  }
+
+  /* ---- Lightning Console tab bars (primary tabs + subtabs) ----
+     Console mode wraps the standard Lightning UI with extra tab bars at
+     .tabBar.slds-tabs_default (and .slds-sub-tabs for the secondary row).
+     These are top-level chrome, not nested in any card/header we already
+     themed, which is why their backgrounds were bleeding white through.
+     Verified class names from live Console DOM. Heads up: Console uses
+     .slds-active.active for the selected tab, NOT .slds-is-active. */
+  .tabBar,
+  .tabBar.slds-tabs_default,
+  .tabBar.slds-sub-tabs,
+  .slds-sub-tabs,
+  ul.tabBarItems,
+  ul.pinnedItems {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  li.oneConsoleTabItem,
+  li.navexConsoleTabItem,
+  li.tabItem.slds-tabs_default__item,
+  li.slds-sub-tabs__item {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  li.oneConsoleTabItem.slds-active.active,
+  li.oneConsoleTabItem.active,
+  li.slds-active.active {
+    background: var(--ctp-base) !important;
+    border-bottom-color: var(--ctp-accent) !important;
+  }
+  .oneConsoleTabItem .tabHeader,
+  .oneConsoleTabItem .tabHeader.slds-tabs_default__link,
+  .oneConsoleTabItem .title,
+  .oneConsoleTabItem .title.slds-truncate {
+    color: var(--ctp-subtext1) !important;
+    background: transparent !important;
+  }
+  .oneConsoleTabItem.slds-active.active .tabHeader,
+  .oneConsoleTabItem.slds-active.active .title,
+  .oneConsoleTabItem.active .tabHeader,
+  .oneConsoleTabItem.active .title {
+    color: var(--ctp-text) !important;
+  }
+  /* Close button + chevron actions trigger inside each console tab */
+  .oneConsoleTabItem .close > button,
+  .oneConsoleTabItem .tabActionsList > button {
+    color: var(--ctp-subtext1) !important;
+    background: transparent !important;
+  }
+  .oneConsoleTabItem .close > button:hover,
+  .oneConsoleTabItem .tabActionsList > button:hover {
+    color: var(--ctp-text) !important;
+    background: var(--ctp-surface0) !important;
   }
 
   /* ---- Dropdowns / popovers / modals ---- */
@@ -526,6 +627,142 @@
   .slds-has-divider_top,
   .slds-has-divider_bottom {
     border-color: var(--ctp-surface1) !important;
+  }
+
+  /* ---- Lightning record page: detail panel + sections + form fields ----
+     Verified against actual record-page DOM. The detail panel root carries
+     both .detail-panel-root and .slds-card; SLDS sections each have their
+     own header band (.slds-section__title) and content area
+     (.slds-section__content) with default borders that show as white unless
+     explicitly overridden. */
+  .detail-panel-root,
+  .detail-panel-root.slds-card,
+  .base-record-form-header-container,
+  .record-body-container,
+  .record-layout-container,
+  .slds-card__body,
+  .slds-card__body_inner {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* Sections (Information, Details, Preferences, System Information).
+     Section header band gets the mantle background to visually delineate
+     it from the content beneath.
+
+     Selectors chain the same class twice to bump specificity from (0,0,1,0)
+     to (0,0,2,0), which is needed to beat Salesforce's LWC-scoped
+     .slds-section__title[lwc-XXX] component CSS. The chained-class trick is
+     ugly but reliable — it doesn't depend on knowing per-build lwc-* hashes. */
+  .slds-section.slds-section,
+  .slds-section.has-header.slds-section,
+  .slds-section.slds-is-open.slds-section,
+  .test-id__section.test-id__section {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .slds-section__title.slds-section__title,
+  .test-id__section-header-container.test-id__section-header-container,
+  h3.slds-section__title,
+  h3.test-id__section-header-container {
+    background: var(--ctp-mantle) !important;
+    background-color: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* The button INSIDE the h3 — .slds-section__title-action — is SLDS's
+     full-width header-bar treatment. Its own background was overlaying the
+     h3's mantle and showing as white. Forcing transparent so the h3 shows
+     through; hover state tints with surface0 for affordance. */
+  .slds-section__title-action.slds-section__title-action,
+  .test-id__section-header-button.test-id__section-header-button,
+  button.slds-section__title-action,
+  button.test-id__section-header-button {
+    background: transparent !important;
+    background-color: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-accent) !important;
+  }
+  .slds-section__title-action.slds-section__title-action:hover,
+  .test-id__section-header-button.test-id__section-header-button:hover,
+  button.slds-section__title-action:hover,
+  button.test-id__section-header-button:hover {
+    background: var(--ctp-surface0) !important;
+    background-color: var(--ctp-surface0) !important;
+  }
+  .slds-section__content.slds-section__content,
+  .test-id__section-content.test-id__section-content,
+  .section__content.section__content {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Section titles use .slds-button as their trigger element, so my generic
+     button rule was making them accent-colored — keep that, the accent on
+     section labels reads as a nice header treatment. */
+
+  /* Form field labels (e.g., "Communication Type Name", "Email", "Active") */
+  .test-id__field-label,
+  .test-id__field-label-container,
+  .slds-form-element__label .test-id__field-label {
+    color: var(--ctp-subtext1) !important;
+  }
+
+  /* Form field values (e.g., "CT-10700396", "Email", "System", "Personal").
+     lightning-formatted-text is the LWC wrapper around most read-only field
+     values; targeting both the wrapper element and its slotted content. */
+  .test-id__field-value,
+  .test-id__field-value lightning-formatted-text,
+  .test-id__output-root .slds-form-element__static,
+  .slds-form-element__static,
+  lightning-formatted-text,
+  lightning-formatted-number,
+  lightning-formatted-date-time,
+  lightning-formatted-name,
+  lightning-formatted-phone,
+  lightning-formatted-rich-text,
+  records-modstamp,
+  records-modstamp span {
+    color: var(--ctp-text) !important;
+  }
+
+  /* Inline-edit pencil triggers next to editable fields. Subtle by default;
+     accent on hover so they don't compete with content for attention. */
+  button.test-id__inline-edit-trigger,
+  button.inline-edit-trigger {
+    background: transparent !important;
+    color: var(--ctp-subtext0) !important;
+  }
+  button.test-id__inline-edit-trigger:hover,
+  button.inline-edit-trigger:hover {
+    background: var(--ctp-surface1) !important;
+    color: var(--ctp-accent) !important;
+  }
+
+  /* Form-element wrapper borders. SLDS uses bordered .slds-form-element_readonly
+     for some edit-affordance variants; the default border is light. */
+  .slds-form-element,
+  .slds-form-element_readonly,
+  .slds-form-element_edit,
+  .slds-form-element__control {
+    border-color: var(--ctp-surface1) !important;
+  }
+
+  /* ---- Lightning record page: entity-type label ----
+     <records-entity-label> is a custom LWC element ("Contact",
+     "Communication Type", "Account", etc.) slotted into a parent
+     component's named slot (slot="entityLabel"). The element tag is
+     reachable from light DOM CSS, and its slotted text content
+     inherits color from this rule. The [slot] attribute selector is
+     added for specificity insurance in case Salesforce's parent
+     component uses ::slotted() rules with !important. Styled as a
+     header-y category label with the accent color and a mild weight
+     bump for emphasis. */
+  records-entity-label,
+  records-entity-label[slot="entityLabel"],
+  [slot="entityLabel"] {
+    color: var(--ctp-accent) !important;
+    font-weight: 600 !important;
   }
 
   /* ---- Setup pages ----
