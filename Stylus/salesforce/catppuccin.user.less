@@ -2,7 +2,7 @@
 @name           Salesforce Catppuccin
 @namespace      github.com/jonzenor/lcars/Stylus/salesforce
 @homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/salesforce
-@version        0.1.13
+@version        0.1.27
 @updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/salesforce/catppuccin.user.less
 @supportURL     https://github.com/jonzenor/lcars/issues
 @description    Soothing pastel theme for Salesforce Lightning Experience, with a distinct header stripe color for sandboxes so you always know which environment you're in at a glance.
@@ -396,6 +396,22 @@
     background: var(--ctp-mantle) !important;
     border-color: var(--ctp-surface1) !important;
   }
+  /* Tab panel content area below each variant's nav bar. <lightning-tab>
+     is the LWC element wrapper that gets rendered with .slds-tabs_*_content. */
+  .slds-tabs_default__content,
+  .slds-tabs_scoped__content,
+  .slds-tabs_medium__content,
+  lightning-tab,
+  lightning-tab.slds-show {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* DevOps Center metadata-changes container (and similar empty-state
+     containers inside modal tab panels) */
+  .metadata-changes-container {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
   .slds-tabs_default__item,
   .slds-tabs_scoped__item,
   .slds-tabs_medium__item {
@@ -479,6 +495,7 @@
   .slds-dropdown,
   .slds-popover,
   .slds-popover__body,
+  .slds-modal,
   .slds-modal__container,
   .slds-modal__content,
   .slds-modal__header,
@@ -486,6 +503,73 @@
     background: var(--ctp-mantle) !important;
     border-color: var(--ctp-surface1) !important;
     color: var(--ctp-text) !important;
+  }
+  /* DevOps Center modal variant — uses its own grid/container classes.
+     The vertical nav inside is .slds-nav-vertical (SLDS standard). */
+  .appdev-modal,
+  .slds-modal.appdev-modal,
+  .appdev-modal__grid,
+  .appdev-modal__vert-nav-container,
+  .appdev-modal__tab-container,
+  .appdev-tab-content {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-nav-vertical,
+  .slds-nav-vertical__section {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-nav-vertical__item {
+    background: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .slds-nav-vertical__item:hover {
+    background: var(--ctp-surface0) !important;
+  }
+  .slds-nav-vertical__item.slds-is-active {
+    background: var(--ctp-surface0) !important;
+    border-left: 3px solid var(--ctp-accent) !important;
+  }
+  .slds-nav-vertical__action {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  /* SLDS shade theme utility (used for the "0 items selected" bar in the
+     DevOps Center modal, and similar inline-action strips elsewhere) */
+  .slds-theme_shade,
+  .commit-process-container.slds-theme_shade {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Scoped notification banner (the "Sign in to DevOps Center" info strip
+     and similar inline messages) */
+  .slds-scoped-notification,
+  .slds-scoped-notification_light {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .slds-scoped-notification a,
+  .slds-scoped-notification .login-to-doce {
+    color: var(--ctp-accent) !important;
+  }
+  /* Empty-state illustrations (treasure chest, etc.) — leave the artwork
+     as-is, just theme the text around it */
+  .slds-illustration,
+  .no-data-container {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-illustration h3,
+  .no-data-container h3 {
+    color: var(--ctp-text) !important;
+  }
+  .slds-illustration p,
+  .no-data-container p {
+    color: var(--ctp-subtext1) !important;
   }
   .slds-dropdown__item > a,
   .slds-dropdown__item button {
@@ -498,6 +582,70 @@
   }
   .slds-modal__close {
     color: var(--ctp-subtext1) !important;
+  }
+
+  /* ---- App Launcher (waffle menu) ----
+     Different wrapper than the Aura popup menus below — uses
+     .appLauncherMenu.uiPanel rather than .popupTargetContainer. */
+  .appLauncherMenu,
+  .appLauncherMenu.uiPanel,
+  .appLauncherMenu .container,
+  .appLauncherMenu .panel-header,
+  .appLauncherMenu .panel-content,
+  .appLauncherMenu .panel-footer {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .appLauncherMenu .title,
+  .appLauncherMenu h2.title {
+    color: var(--ctp-text) !important;
+  }
+  .appLauncherMenu .slds-dropdown__header {
+    color: var(--ctp-subtext1) !important;
+    background: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Menu items inside the launcher — keep navigational items at text color
+     (not accent) to match the Setup-menu pattern from earlier. */
+  one-app-launcher-menu,
+  one-app-launcher-menu-item,
+  one-app-launcher-search-bar,
+  .al-menu-div,
+  .al-menu-search-bar,
+  .al-menu-dropdown-list {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  a.al-menu-item,
+  one-app-launcher-menu-item a.al-menu-item {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  one-app-launcher-menu-item:hover,
+  one-app-launcher-menu-item:hover > a.al-menu-item,
+  a.al-menu-item:hover {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+  .al-menu-item-label,
+  .al-menu-item-label p {
+    color: var(--ctp-text) !important;
+  }
+  /* Search input inside the launcher */
+  .appLauncherMenu .slds-input,
+  .appLauncherMenu input[type="search"] {
+    background: var(--ctp-base) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* Close button */
+  .appLauncherMenu .slds-popover__close,
+  .appLauncherMenu .closeBtn {
+    color: var(--ctp-subtext1) !important;
+  }
+  .appLauncherMenu .slds-popover__close:hover {
+    color: var(--ctp-text) !important;
   }
 
   /* ---- Aura popup menus ----
@@ -836,6 +984,325 @@
     color: var(--ctp-text) !important;
   }
 
+  /* ---- Object Manager sub-tables (uiVirtualDataGrid) ----
+     Tables inside an object's detail view — Buttons/Links/Actions,
+     Page Layouts, Compact Layouts, etc. — render in a .related-list-card
+     section wrapping a uiVirtualDataGrid table. The section wrapper itself
+     defaulted to white behind the table. Row backgrounds are already
+     handled by the Object Manager :has() rules below since they contain
+     the same .objectManagerOutputCheckbox marker. */
+  section.related-list-card,
+  .related-list-card,
+  .related-list-card-content {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .scrollerWrapper,
+  .scroller.uiScroller,
+  div.scroller {
+    background: transparent !important;
+  }
+  /* Table sits darker than its .related-list-card wrapper (which is
+     surface0), so the table reads as inset rather than blending in. */
+  table.uiVirtualDataGrid,
+  table.uiVirtualDataGrid--default,
+  table.slds-table.uiVirtualDataGrid {
+    background: var(--ctp-base) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  table.uiVirtualDataGrid thead,
+  table.uiVirtualDataGrid thead tr,
+  table.uiVirtualDataGrid thead th {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table.uiVirtualDataGrid th.slds-text-heading--label,
+  table.uiVirtualDataGrid th.standard-col,
+  table.uiVirtualDataGrid th.actionCol {
+    color: var(--ctp-subtext1) !important;
+  }
+  /* Data rows. The :has() rules below scope to OM-list-style tables only;
+     this catches uiVirtualDataGrid tables without those markers (e.g.
+     Object Limits, which has only .uiOutputText cells). */
+  table.uiVirtualDataGrid tbody tr,
+  table.uiVirtualDataGrid tbody tr > td,
+  table.uiVirtualDataGrid tbody tr > th {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Hover lifts to surface0 — matches the .related-list-card wrapper, so
+     hovering a row visually "floats it up to card level" from the inset
+     base of the table. */
+  table.uiVirtualDataGrid tbody tr:hover,
+  table.uiVirtualDataGrid tbody tr:hover > td,
+  table.uiVirtualDataGrid tbody tr:hover > th {
+    background: var(--ctp-surface0) !important;
+  }
+  /* Sortable column headers and sort indicators */
+  table.uiVirtualDataGrid th.slds-is-sortable a.toggle,
+  table.uiVirtualDataGrid th a.toggle {
+    color: var(--ctp-subtext1) !important;
+  }
+  table.uiVirtualDataGrid th.slds-is-sortable a.toggle:hover {
+    color: var(--ctp-text) !important;
+  }
+  table.uiVirtualDataGrid th.slds-is-sortable.ascending,
+  table.uiVirtualDataGrid th.slds-is-sortable.descending {
+    color: var(--ctp-accent) !important;
+  }
+
+  /* ---- uiDataGrid variant (Recent Items on Setup Home, similar lists) ----
+     Same family as uiVirtualDataGrid but without the "Virtual" — used in
+     simpler non-virtualized tables. Same inset treatment for consistency. */
+  table.uiDataGrid,
+  table.uiDataGrid--default,
+  table.recentItemsTable {
+    background: var(--ctp-base) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  table.uiDataGrid thead,
+  table.uiDataGrid thead tr,
+  table.uiDataGrid thead th,
+  table.recentItemsTable thead th {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-subtext1) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table.uiDataGrid tbody tr,
+  table.uiDataGrid tbody tr > td,
+  table.uiDataGrid tbody tr > th,
+  table.recentItemsTable tbody tr > td {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table.uiDataGrid tbody tr:hover,
+  table.uiDataGrid tbody tr:hover > td,
+  table.recentItemsTable tbody tr:hover > td {
+    background: var(--ctp-surface0) !important;
+  }
+  a.setupLink {
+    color: var(--ctp-accent) !important;
+  }
+  a.setupLink:hover {
+    color: var(--ctp-blue) !important;
+  }
+
+  /* ---- Newer lightning-datatable / slds-table_header-fixed variant ----
+     Used in pages like Object Access (permission tables) with sticky
+     headers and sortable/resizable columns. Same inset-table treatment
+     as uiVirtualDataGrid: base bg, mantle header, surface0 row hover. */
+  table.slds-table_header-fixed,
+  table.slds-table.slds-table_header-fixed,
+  table.slds-table.slds-table_header-fixed.slds-table_bordered {
+    background: var(--ctp-base) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  table.slds-table_header-fixed thead,
+  table.slds-table_header-fixed thead tr,
+  table.slds-table_header-fixed thead th {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* .slds-cell-fixed is the inner positioned cell wrapper inside header
+     th for the sticky-header behavior. It needs its own bg or the header
+     reveals white through. */
+  .slds-cell-fixed,
+  th .slds-cell-fixed {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Sortable header link */
+  a.slds-th__action,
+  a.slds-th__action.slds-text-link_reset {
+    color: var(--ctp-text) !important;
+    background: transparent !important;
+  }
+  a.slds-th__action.slds-is-sorted_asc,
+  a.slds-th__action.slds-is-sorted_desc {
+    color: var(--ctp-accent) !important;
+  }
+  /* The chevron action menu trigger inside each header */
+  .slds-th__action-button button.slds-button_icon-bare {
+    color: var(--ctp-subtext1) !important;
+    background: transparent !important;
+  }
+  .slds-th__action-button button.slds-button_icon-bare:hover {
+    color: var(--ctp-text) !important;
+  }
+  /* Data rows in the header-fixed table */
+  table.slds-table_header-fixed tbody tr,
+  table.slds-table_header-fixed tbody tr > td,
+  table.slds-table_header-fixed tbody tr > th {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table.slds-table_header-fixed tbody tr:hover,
+  table.slds-table_header-fixed tbody tr:hover > td,
+  table.slds-table_header-fixed tbody tr:hover > th {
+    background: var(--ctp-surface0) !important;
+  }
+  /* Best-effort attempt to relax the height constraint that's forcing
+     vertical scroll. Salesforce inlines style="height: 100%" on the outer
+     container; if the surrounding layout region is short, the table
+     scrolls internally. Setting min-height keeps it usable on tall layouts
+     without breaking the sticky-header behavior on short ones. */
+  .slds-table_header-fixed_container {
+    min-height: 600px !important;
+    background: var(--ctp-base) !important;
+  }
+  /* The .slds-scrollable_y wrapper inside the header-fixed container sits
+     behind the table and shows through below the last row when there are
+     fewer rows than fill the container. Scoping to just this context so
+     it doesn't restyle every .slds-scrollable_y across Salesforce. */
+  .slds-table_header-fixed_container .slds-scrollable_y,
+  .slds-table_header-fixed_container > .slds-scrollable_y {
+    background: var(--ctp-base) !important;
+  }
+
+  /* ---- Catppuccin colors for success / error icon variants ----
+     .slds-icon-text-success (green check) and .slds-icon-text-error (red X)
+     are SLDS semantic icon variants used in boolean permission columns,
+     toasts, badges, etc. Remapping the SVG fills to the palette. */
+  .slds-icon-text-success,
+  svg.slds-icon-text-success,
+  .slds-icon-text-success path,
+  .slds-icon-text-success g {
+    fill: var(--ctp-green) !important;
+    color: var(--ctp-green) !important;
+  }
+  .slds-icon-text-error,
+  svg.slds-icon-text-error,
+  .slds-icon-text-error path,
+  .slds-icon-text-error g {
+    fill: var(--ctp-red) !important;
+    color: var(--ctp-red) !important;
+  }
+  .slds-icon-text-warning,
+  svg.slds-icon-text-warning,
+  .slds-icon-text-warning path,
+  .slds-icon-text-warning g {
+    fill: var(--ctp-yellow) !important;
+    color: var(--ctp-yellow) !important;
+  }
+  /* Link wrapper class in label-column cells */
+  .isText.onesetupVirtualGridSetupPageLink a {
+    color: var(--ctp-accent) !important;
+  }
+  .isText.onesetupVirtualGridSetupPageLink a:hover {
+    color: var(--ctp-blue) !important;
+  }
+  /* "No items to display" empty-state placeholder shown when a sub-table
+     in Object Manager has zero rows */
+  .emptyContent,
+  .emptyContentInner {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-subtext1) !important;
+  }
+
+  /* ---- Object Manager left-nav sidebar ----
+     Vertical nav inside an object's detail view in Setup — Details /
+     Fields & Relationships / Page Layouts / etc. SLDS class is
+     .slds-navigation-list_vertical; Aura wrapper is .objectManagerLeftNav.
+     The :has() on .slds-container_small catches the outer column that
+     was rendering white behind the nav items. */
+  .slds-container_small:has(.objectManagerLeftNav),
+  .objectManagerLeftNav,
+  [role="tabpanel"].objectManagerLeftNav,
+  .slds-navigation-list_vertical {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  .objectManagerLeftNav ul[role="tablist"],
+  .slds-navigation-list_vertical ul[role="tablist"] {
+    background: transparent !important;
+  }
+  li.slds-nav-vertical__item {
+    background: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  li.slds-nav-vertical__item:hover {
+    background: var(--ctp-surface0) !important;
+  }
+  a.slds-nav-vertical__action {
+    background: transparent !important;
+    color: var(--ctp-accent) !important;
+  }
+  a.slds-nav-vertical__action:hover {
+    background: transparent !important;
+    color: var(--ctp-blue) !important;
+  }
+  /* Active/selected nav item — accent left border + slightly elevated bg */
+  li.slds-nav-vertical__item.slds-is-active,
+  li.slds-is-active.slds-nav-vertical__item {
+    background: var(--ctp-surface0) !important;
+    border-left: 3px solid var(--ctp-accent) !important;
+  }
+  li.slds-nav-vertical__item.slds-is-active > a.slds-nav-vertical__action,
+  a.slds-nav-vertical__action[aria-selected="true"] {
+    color: var(--ctp-accent) !important;
+    font-weight: 600 !important;
+  }
+
+  /* ---- Setup Object Manager list table ----
+     The Object Manager doesn't put any class on its <tr> rows, so generic
+     row selectors would restyle every table in Salesforce. Scoping via
+     :has() against Object-Manager-specific cell markers (.valueColumnType,
+     .objectManagerOutputCheckbox, .objectManagerVirtualActionMenu) so the
+     change is contained. tbody:has(...) means we evaluate :has() once per
+     table instead of per row. */
+  tbody:has(td.valueColumnType) tr,
+  tbody:has(.objectManagerOutputCheckbox) tr,
+  tbody:has(div.objectManagerVirtualActionMenu) tr {
+    background: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+  }
+  tbody:has(td.valueColumnType) tr > td,
+  tbody:has(td.valueColumnType) tr > th,
+  tbody:has(.objectManagerOutputCheckbox) tr > td,
+  tbody:has(.objectManagerOutputCheckbox) tr > th {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  tbody:has(td.valueColumnType) tr:hover,
+  tbody:has(.objectManagerOutputCheckbox) tr:hover {
+    background: var(--ctp-surface0) !important;
+  }
+  tbody:has(td.valueColumnType) tr:hover > td,
+  tbody:has(td.valueColumnType) tr:hover > th,
+  tbody:has(.objectManagerOutputCheckbox) tr:hover > td,
+  tbody:has(.objectManagerOutputCheckbox) tr:hover > th {
+    background: var(--ctp-surface0) !important;
+  }
+  /* The Type column has its own marker class, and the Deployed-column
+     checkbox wrapper. Keep their text light. */
+  td.valueColumnType,
+  span.valueColumnType,
+  span.valueColumnType.uiOutputText,
+  span.objectManagerOutputCheckbox.unchecked,
+  span.objectManagerOutputCheckbox.assistiveText {
+    color: var(--ctp-text) !important;
+  }
+  /* Show More chevron in the action column */
+  a.rowActionsPlaceHolder.slds-button {
+    color: var(--ctp-subtext1) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  a.rowActionsPlaceHolder.slds-button:hover {
+    color: var(--ctp-text) !important;
+    background: var(--ctp-surface1) !important;
+  }
+
   /* ---- Lightning Console utility bar (bottom footer strip) ----
      The horizontal action strip at the bottom of Console layouts —
      Macros, Notes, History, Omni-Channel, Phone, etc. Verified against
@@ -877,6 +1344,47 @@
   .slds-utility-bar__text,
   .slds-utility-bar__text_reflow,
   .slds-utility-bar__item .itemTitle {
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- Setup Home (Welcome screen) ----
+     The .flex-box.home-screen wrapper and the <setup-agentic-setup-logo>
+     welcome section are outside my earlier theming scopes — set their
+     background directly. Cards/tables inside already pick up the right
+     bg via the .slds-theme_default override and table rules. */
+  .flex-box.home-screen,
+  .home-screen,
+  setup-agentic-setup-logo,
+  setup-agentic-setup-page-header,
+  setup-enable-agentforce-setup-banner,
+  setup_discovery-go-container,
+  setup_discovery-card-list,
+  .setup-card,
+  .yukon-carousel,
+  .recent-items-container,
+  .banner-wrapper,
+  .tabs-container,
+  .go-container,
+  .card-list__container {
+    background: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* Welcome title/subtitle inside the agentic setup logo */
+  .welcome-title,
+  .welcome-text-part,
+  .user-name-default,
+  h1.welcome-title {
+    color: var(--ctp-text) !important;
+  }
+  .welcome-subtitle {
+    color: var(--ctp-subtext1) !important;
+  }
+  /* The agentic setup page-header sparkles icon */
+  .topic-icon,
+  setup-agentic-setup-page-header .topic-icon {
+    color: var(--ctp-accent) !important;
+  }
+  .topic-text {
     color: var(--ctp-text) !important;
   }
 
