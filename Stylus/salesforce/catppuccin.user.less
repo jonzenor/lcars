@@ -2,7 +2,7 @@
 @name           Salesforce Catppuccin
 @namespace      github.com/jonzenor/lcars/Stylus/salesforce
 @homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/salesforce
-@version        0.1.28
+@version        0.1.30
 @updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/salesforce/catppuccin.user.less
 @supportURL     https://github.com/jonzenor/lcars/issues
 @description    Soothing pastel theme for Salesforce Lightning Experience, with a distinct header stripe color for sandboxes so you always know which environment you're in at a glance.
@@ -582,6 +582,142 @@
   }
   .slds-modal__close {
     color: var(--ctp-subtext1) !important;
+  }
+
+  /* ---- Notifications panel (bell icon dropdown) ----
+     Wrapper is .unsNotificationsPanel inside the same .panel-content
+     scrollable container used by other popups. Each item is a
+     .notification-row.unsNotificationsListRow li. */
+  .unsNotificationsPanel {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  .unsNotificationsPanel .titleContainer {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .unsNotificationsPanel .titleName,
+  .unsNotificationsPanel h2.titleName {
+    color: var(--ctp-text) !important;
+  }
+  .unsNotificationsPanel .titleAction a {
+    color: var(--ctp-accent) !important;
+  }
+  .unsNotificationsPanel .titleAction a:hover {
+    color: var(--ctp-blue) !important;
+  }
+  .unsNotificationsPanel .listContainer,
+  .unsNotificationsPanel .scroller,
+  .unsNotificationsPanel .unsNotificationsVirtualList {
+    background: var(--ctp-mantle) !important;
+  }
+  li.notification-row,
+  li.unsNotificationsListRow {
+    background: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  li.notification-row:hover,
+  li.unsNotificationsListRow:hover {
+    background: var(--ctp-surface0) !important;
+  }
+  li.notification-row a.notification-link,
+  .notification-link {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  .notification-text-title,
+  h3.notification-text-title {
+    color: var(--ctp-text) !important;
+  }
+  .notification-text {
+    color: var(--ctp-subtext1) !important;
+  }
+  .notification-age {
+    color: var(--ctp-subtext0) !important;
+  }
+  /* Unread indicator dot — picks up accent so it pops */
+  li.notification-unread .assistive-unread-mark {
+    color: var(--ctp-accent) !important;
+  }
+
+  /* ---- Global Search (header search + Recent Items dropdown) ----
+     The .forceSearchInputDesktop wrapper contains a .contentWrapper with
+     the search icon container and input. The Recent Items dropdown is a
+     .lookup__menu / .uiAutocompleteList inside .autocompleteWrapper.
+     Scoping bg rules to the search context so I don't restyle every
+     lookup field elsewhere. */
+  .forceSearchInputDesktop,
+  .onesetupSetupSearchInputDesktop,
+  .forceSearchInputDesktop .contentWrapper,
+  .forceSearchInputDesktop .slds-input-has-icon_left,
+  .forceSearchInputDesktop .slds-form-element__control {
+    background: var(--ctp-base) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .forceSearchInputDesktop .searchIcon,
+  .forceSearchInputDesktop .inputIcon {
+    color: var(--ctp-subtext1) !important;
+    background: transparent !important;
+  }
+  .forceSearchInputDesktop input.slds-input,
+  .forceSearchInputDesktop .uiInputTextForAutocomplete {
+    background: var(--ctp-base) !important;
+    border-color: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  .forceSearchInputDesktop input.slds-input::placeholder {
+    color: var(--ctp-overlay0) !important;
+  }
+  /* Recent Items dropdown */
+  .forceSearchInputDesktop .lookup__menu,
+  .forceSearchInputDesktop .uiAutocompleteList,
+  .forceSearchInputDesktop .listContent,
+  .forceSearchInputDesktop .emptyListContent {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .forceSearchInputDesktop .lookup__header,
+  .forceSearchInputDesktop .listHeader,
+  .forceSearchInputDesktop .forceSearchSearchInputListHeader {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-subtext1) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .forceSearchInputDesktop ul.lookup__list,
+  .forceSearchInputDesktop .lookup__list.visible {
+    background: transparent !important;
+  }
+  .forceSearchInputDesktop .lookup__item,
+  .forceSearchInputDesktop .uiAutocompleteOption,
+  .forceSearchInputDesktop .forceSearchInputDesktopOption {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  .forceSearchInputDesktop .lookup__item:hover,
+  .forceSearchInputDesktop .uiAutocompleteOption:hover {
+    background: var(--ctp-surface0) !important;
+  }
+  /* MRU item name + description */
+  .forceSearchInputDesktop .mruName,
+  .forceSearchInputDesktop .mruName .slds-text-body--regular {
+    color: var(--ctp-text) !important;
+  }
+  .forceSearchInputDesktop .mruDescription {
+    color: var(--ctp-subtext1) !important;
+  }
+  /* Leave the .mruIcon entity-type color swatches alone — they're inline
+     styled per-object-type (e.g., #2a739e for User) for identification. */
+  /* Advanced Search footer */
+  .forceSearchInputDesktop .lookup__footer,
+  .forceSearchInputDesktop .forceSearchFilterPanelTrigger {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .forceSearchInputDesktop .lookup__footer a {
+    color: var(--ctp-accent) !important;
   }
 
   /* ---- App Launcher (waffle menu) ----
