@@ -2,7 +2,7 @@
 @name           Salesforce Catppuccin
 @namespace      github.com/jonzenor/lcars/Stylus/salesforce
 @homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/salesforce
-@version        0.1.27
+@version        0.1.28
 @updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/salesforce/catppuccin.user.less
 @supportURL     https://github.com/jonzenor/lcars/issues
 @description    Soothing pastel theme for Salesforce Lightning Experience, with a distinct header stripe color for sandboxes so you always know which environment you're in at a glance.
@@ -1506,6 +1506,70 @@
   .setup-tree button.slds-button_icon-bare {
     background: transparent !important;
     color: var(--ctp-subtext1) !important;
+  }
+
+  /* ---- Visualforce Deployment Status / Deployment Details page ----
+     Uses ID selectors (unusual for SF but this is an older VF page) plus
+     ExtJS-rendered SVG donut charts with hardcoded inline rgb() fills. */
+  #inProgressSectionContainer,
+  #inProgressSummaryContainer,
+  #inProgressDetailsContainer,
+  #componentProgressDetailsContainer,
+  #testProgressDetailsContainer,
+  #deployInfoTextContainer,
+  #deployInfoText {
+    background: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  #inProgressDeployHeader,
+  h2#inProgressDeployHeader {
+    color: var(--ctp-text) !important;
+  }
+  #inProgressSummaryContainer ul,
+  #inProgressSummaryContainer li {
+    color: var(--ctp-text) !important;
+  }
+  .chartHeaderContainer,
+  .chartHeaderText {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  .chartHeaderNumbering {
+    background: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  .progressChartContainer,
+  .progressChartWrapper {
+    background: transparent !important;
+  }
+  /* The empty .chartInnerBackgroundContainer div is the donut-hole mask
+     positioned absolutely over the SVG center. Match it to the page bg
+     so the hole reads correctly. */
+  .chartInnerBackgroundContainer {
+    background: var(--ctp-base) !important;
+  }
+  .progressTextContainer,
+  .progressTextLargest,
+  .progressTextLarge,
+  #componentProgressText,
+  #testProgressText {
+    color: var(--ctp-text) !important;
+  }
+  .failureCount {
+    color: var(--ctp-red) !important;
+  }
+
+  /* Override hardcoded inline rgb() fills on ExtJS donut chart paths.
+     CSS fill wins over the SVG fill attribute. */
+  svg path[fill="rgb(96,193,112)"] {
+    fill: var(--ctp-green) !important;
+  }
+  svg path[fill="rgb(214,129,132)"] {
+    fill: var(--ctp-red) !important;
+  }
+  svg path[fill="rgb(179,179,179)"] {
+    fill: var(--ctp-surface1) !important;
   }
 
   /* ---- Legacy Setup detail pages ----
