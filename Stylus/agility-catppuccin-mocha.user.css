@@ -1856,31 +1856,42 @@
     color: var(--ctp-text) !important;
   }
 
-  /* Top toolbar of the modal (title + tabs + edit/share/close) */
-  .asset-summary > .toolbar, .asset-summary-modal > .toolbar {
+  /* Top toolbar of the modal (title + tabs + edit/share/close).
+     Also matches the standalone asset page where the wrapper is .header-area
+     instead of .asset-summary — same toolbar markup, different parent. */
+  .asset-summary > .toolbar, .asset-summary-modal > .toolbar,
+  .header-area, .header-area > .toolbar {
     background-color: var(--ctp-mantle) !important;
+    background-image: none !important;
     color: var(--ctp-text) !important;
     border-bottom: 1px solid var(--ctp-surface0) !important;
   }
   .asset-summary .toolbar .title-id h1,
-  .asset-summary .toolbar .title-id .selectable {
+  .asset-summary .toolbar .title-id .selectable,
+  .header-area .toolbar .title-id h1,
+  .header-area .toolbar .title-id .selectable {
     color: var(--ctp-text) !important;
     font-weight: 600;
   }
-  .asset-summary .toolbar .asset-details-icon { background-color: transparent !important; }
+  .asset-summary .toolbar .asset-details-icon,
+  .header-area .toolbar .asset-details-icon { background-color: transparent !important; }
 
   /* Details / History / Visualize / Ideas tab strip in modal toolbar */
-  .asset-summary .tabbar, .asset-summary .tabstrip {
+  .asset-summary .tabbar, .asset-summary .tabstrip,
+  .header-area .tabbar, .header-area .tabstrip {
     background-color: transparent !important;
   }
-  .asset-summary .tabs li.tab a, .asset-summary .tabstrip .tab a {
+  .asset-summary .tabs li.tab a, .asset-summary .tabstrip .tab a,
+  .header-area .tabs li.tab a, .header-area .tabstrip .tab a {
     color: var(--ctp-subtext1) !important;
     background-color: transparent !important;
     text-decoration: none !important;
     border-bottom: 2px solid transparent !important;
   }
-  .asset-summary .tabs li.tab a:hover { color: var(--ctp-text) !important; }
-  .asset-summary .tabs li.tab.selected a, .asset-summary .tabstrip .tab.selected a {
+  .asset-summary .tabs li.tab a:hover,
+  .header-area .tabs li.tab a:hover { color: var(--ctp-text) !important; }
+  .asset-summary .tabs li.tab.selected a, .asset-summary .tabstrip .tab.selected a,
+  .header-area .tabs li.tab.selected a, .header-area .tabstrip .tab.selected a {
     color: var(--accent) !important;
     border-bottom-color: var(--accent) !important;
     font-weight: 600;
@@ -1890,20 +1901,27 @@
   .asset-summary .toolbar .asset-actions,
   .asset-summary .toolbar .share,
   .asset-summary .toolbar .pop-out,
-  .asset-summary .toolbar .cancel {
+  .asset-summary .toolbar .cancel,
+  .header-area .toolbar .asset-actions,
+  .header-area .toolbar .share,
+  .header-area .toolbar .pop-out,
+  .header-area .toolbar .cancel {
     background-color: transparent !important;
     color: var(--ctp-subtext1) !important;
   }
-  .asset-summary .toolbar .quick-action-text {
+  .asset-summary .toolbar .quick-action-text,
+  .header-area .toolbar .quick-action-text {
     background-color: var(--ctp-surface1) !important;
     color: var(--ctp-text) !important;
     border: 1px solid var(--ctp-surface2) !important;
   }
-  .asset-summary .toolbar .quick-action-text:hover {
+  .asset-summary .toolbar .quick-action-text:hover,
+  .header-area .toolbar .quick-action-text:hover {
     background-color: var(--ctp-surface2) !important;
     border-color: var(--ctp-blue) !important;
   }
-  .asset-summary .toolbar .cancel:hover { color: var(--ctp-red) !important; }
+  .asset-summary .toolbar .cancel:hover,
+  .header-area .toolbar .cancel:hover { color: var(--ctp-red) !important; }
 
   /* Side panel (Conversations / Activities) */
   .asset-summary .side-panel, .side-panel.opened {
