@@ -2,7 +2,7 @@
 @name           Salesforce Catppuccin
 @namespace      github.com/jonzenor/lcars/Stylus/salesforce
 @homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/salesforce
-@version        0.1.30
+@version        0.1.37
 @updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/salesforce/catppuccin.user.less
 @supportURL     https://github.com/jonzenor/lcars/issues
 @description    Soothing pastel theme for Salesforce Lightning Experience, with a distinct header stripe color for sandboxes so you always know which environment you're in at a glance.
@@ -582,6 +582,60 @@
   }
   .slds-modal__close {
     color: var(--ctp-subtext1) !important;
+  }
+
+  /* ---- User profile dropdown (avatar menu) ----
+     The avatar dropdown opens .oneUserProfileCard inside an Aura popup. The
+     top section (name/email/Settings/Log Out) inherits from earlier rules,
+     but the "DISPLAY DENSITY" and "OPTIONS" section-header h3s, plus the
+     selected density-option button, paint as light/white because they use
+     SLDS-default backgrounds we hadn't covered yet. */
+  .oneUserProfileCard {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  .oneUserProfileCard .profile-card-name a,
+  .oneUserProfileCard h1.profile-card-name a {
+    color: var(--ctp-text) !important;
+  }
+  .oneUserProfileCard .profile-card-domain {
+    color: var(--ctp-subtext1) !important;
+  }
+  /* Section headers in the dropdown: "DISPLAY DENSITY", "OPTIONS".
+     SLDS gives these a light shade-band to delineate sections; we want a
+     subtle band that fits the dark theme. */
+  .oneUserProfileCard h3.density-section-header,
+  .oneUserProfileCard h3.profile-card-options {
+    background: var(--ctp-crust) !important;
+    color: var(--ctp-subtext0) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Density switcher options. Selected option has [disabled] + aria-pressed.
+     Override SLDS's white disabled-button background and force the bare
+     button to read as a row, not a pill. */
+  .oneUserProfileCard one-density-switcher,
+  .oneUserProfileCard one-density-option,
+  .oneUserProfileCard one-density-option button.option-button {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  .oneUserProfileCard one-density-option button.option-button[disabled],
+  .oneUserProfileCard one-density-option button.option-button[aria-pressed="true"] {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    opacity: 1 !important;
+  }
+  .oneUserProfileCard one-density-option button.option-button:hover {
+    background: var(--ctp-surface1) !important;
+  }
+  .oneUserProfileCard .option-label,
+  .oneUserProfileCard .option-label-selected {
+    color: var(--ctp-text) !important;
+  }
+  /* Footer area (Switch to Classic / Add Username) */
+  .oneUserProfileCard .profile-card-footer {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
   }
 
   /* ---- Notifications panel (bell icon dropdown) ----
@@ -1483,6 +1537,70 @@
     color: var(--ctp-text) !important;
   }
 
+  /* ---- Yukon carousel cards (Setup Home "Suggested for You" cards) ----
+     LWC-based suggestion cards inside the Setup Home carousel. The card
+     body defaulted to white, the "Suggested for You" badge to lavender,
+     and the footer to a separate lavender shade. */
+  .carouselCard {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .carouselCard .cardTop,
+  .carouselCard .contentWrapper {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+  }
+  .carouselCard .cardHeader {
+    background: transparent !important;
+  }
+  .carouselCard .cardTitle,
+  .carouselCard h3.cardTitle {
+    color: var(--ctp-text) !important;
+  }
+  .carouselCard .cardBody,
+  .carouselCard .cardBody p {
+    color: var(--ctp-subtext1) !important;
+  }
+  .carouselCard .cardFooter {
+    background: var(--ctp-mantle) !important;
+    border-top: 1px solid var(--ctp-surface1) !important;
+  }
+  /* "Suggested for You" badge — accent-tinted to match the theme */
+  sales_yukon-suggested-for-you-badge,
+  .suggest-badge {
+    background: var(--ctp-surface1) !important;
+    color: var(--ctp-accent) !important;
+  }
+  .suggest-badge .badge-text {
+    color: var(--ctp-accent) !important;
+  }
+  .suggest-badge lightning-helptext button {
+    color: var(--ctp-accent) !important;
+  }
+  /* Actions menu (three-dots) trigger in header */
+  .carouselCard .headerActions button.slds-button_icon-container {
+    background: transparent !important;
+    color: var(--ctp-subtext1) !important;
+  }
+  .carouselCard .headerActions button.slds-button_icon-container:hover {
+    color: var(--ctp-text) !important;
+    background: var(--ctp-surface1) !important;
+  }
+  /* Learn More CTA button — already gets brand styling from my .slds-button_brand
+     rule, but ensure good contrast against the dark footer */
+  .carouselCard .primaryAction.slds-button_brand {
+    background: var(--ctp-accent) !important;
+    color: var(--ctp-base) !important;
+    border-color: var(--ctp-accent) !important;
+  }
+  .carouselCard .primaryAction.slds-button_brand:hover {
+    background: var(--ctp-blue) !important;
+    color: var(--ctp-base) !important;
+  }
+
   /* ---- Setup Home (Welcome screen) ----
      The .flex-box.home-screen wrapper and the <setup-agentic-setup-logo>
      welcome section are outside my earlier theming scopes — set their
@@ -1830,6 +1948,106 @@
   input[type="submit"].btn:hover {
     background: var(--ctp-surface1) !important;
     border-color: var(--ctp-accent) !important;
+  }
+
+  /* The wrapper div that holds the entire RichFaces tab panel on the Sandboxes
+     setup page. Salesforce styles it via an SLDS token that we remap to the
+     mocha text color at :root, so it ends up painting #cdd6f4 (light text
+     color) as a *background* — reads as washed-out white behind the tab strip.
+     Forcing mantle here so it matches the rest of the tab chrome. */
+  .sandboxTabPanelContainer {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+
+  /* ---- RichFaces tab panels (legacy VF Setup pages) ----
+     Older Setup pages — Sandboxes, some Custom Settings list views, etc. —
+     render their tab strips with RichFaces (rich-tabpanel / rich-tab-*),
+     not SLDS .slds-tabs_*. Different class family, so the SLDS tab rules
+     above don't reach these. .rich-tab-bottom-line is the full-width td
+     under the tab strip that was showing as white behind/around the tabs.
+
+     RichFaces wraps each tab in unnamed intermediate <table>/<tbody>/<tr>
+     elements with default white backgrounds. Setting transparent on the
+     tab-label td alone leaves those wrappers visible. The descendant rule
+     below strips backgrounds from every nested table/tr inside the panel
+     so the themed parent-cell color shows through cleanly. */
+  table.rich-tabpanel,
+  td.rich-tab-bottom-line,
+  td.rich-tabpanel-content {
+    background: var(--ctp-mantle) !important;
+    border-color: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* Strip backgrounds from unnamed wrapper tables RichFaces injects between
+     the themed cells and the tab-label td. Without this, white shows through
+     even when the label cell itself is transparent. */
+  table.rich-tabpanel table,
+  table.rich-tabpanel tbody,
+  table.rich-tabpanel tr {
+    background: transparent !important;
+  }
+  td.rich-tabhdr-cell-active {
+    background: var(--ctp-base) !important;
+    border-color: var(--ctp-surface1) !important;
+    border-bottom-color: var(--ctp-accent) !important;
+  }
+  td.rich-tabhdr-cell-inactive {
+    background: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  td.rich-tabhdr-side-border,
+  td.rich-tabhdr-side-cell {
+    background: transparent !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* Set explicit (non-transparent) backgrounds on the leaf tab-label tds.
+     The earlier transparent approach kept showing white because RichFaces'
+     nested wrapper tables aren't reliably transparent across browsers —
+     painting the leaf directly bypasses the inheritance chain entirely. */
+  td.rich-tab-header.rich-tab-active {
+    background: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+    font-weight: 600 !important;
+  }
+  td.rich-tab-header.rich-tab-inactive {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-subtext1) !important;
+  }
+  td.rich-tab-header.rich-tab-inactive:hover {
+    background: var(--ctp-surface1) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* The intermediate side-cell td and shifted-table wrappers wrap the label
+     with their own background; force them to match the label colors so the
+     full tab cell reads as one solid block.
+
+     Specificity here mirrors Salesforce's own rule in versioning.css that
+     forces these to `transparent !important`:
+       body .rich-tabhdr-cell-active>table[id$="shifted"] td.rich-tabhdr-side-cell td.rich-tab-active
+     That's (0,0,4,4). Our earlier shorter selectors were (0,0,3,3) and lost
+     the specificity war. Matching the exact selector path here so we tie on
+     specificity, then win on source order (Stylus injects after SF). */
+  body .rich-tabhdr-cell-active > table[id$="shifted"] td.rich-tabhdr-side-cell,
+  body .rich-tabhdr-cell-active > table[id$="shifted"] td.rich-tabhdr-side-cell td.rich-tab-active {
+    background: var(--ctp-base) !important;
+  }
+  body .rich-tabhdr-cell-inactive > table[id$="shifted"] td.rich-tabhdr-side-cell,
+  body .rich-tabhdr-cell-inactive > table[id$="shifted"] td.rich-tabhdr-side-cell td.rich-tab-inactive {
+    background: var(--ctp-surface0) !important;
+  }
+
+  /* ---- Sandbox license counters ----
+     The Sandboxes Setup page (Visualforce, embedded in an aloha iframe) shows
+     license-availability counts in colored text: green when licenses remain,
+     red when fully consumed. Classes are .license_available / .license_unavailable
+     on a <span class="boldText ..."> inside the "Available Sandbox Licenses"
+     panel. Remap to Catppuccin green/red. */
+  .license_available {
+    color: var(--ctp-green) !important;
+  }
+  .license_unavailable {
+    color: var(--ctp-red) !important;
   }
 
   /* ---- Legacy Setup list tables ----
