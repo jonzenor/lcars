@@ -2,7 +2,7 @@
 @name           Salesforce Catppuccin
 @namespace      github.com/jonzenor/lcars/Stylus/salesforce
 @homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/salesforce
-@version        0.1.37
+@version        0.1.47
 @updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/salesforce/catppuccin.user.less
 @supportURL     https://github.com/jonzenor/lcars/issues
 @description    Soothing pastel theme for Salesforce Lightning Experience, with a distinct header stripe color for sandboxes so you always know which environment you're in at a glance.
@@ -772,6 +772,115 @@
   }
   .forceSearchInputDesktop .lookup__footer a {
     color: var(--ctp-accent) !important;
+  }
+
+  /* ---- Search Assistant dialog (global search dropdown) ----
+     The header search opens a two-pane assistant dialog: left pane shows
+     instant suggestions, right pane shows a "Do more with Search!" help
+     panel. Wrapper is .forceSearchAssistantDialog inside the same panel
+     popup container. The right pane defaults to white via SLDS, and the
+     suggestion text uses .slds-text-color--default (double-dash BEM variant)
+     which our existing .slds-text-color_default (underscore) rule doesn't
+     match — both forms are valid SLDS, they're distinct selectors. */
+  .forceSearchAssistantDialog,
+  .saDialogPaneContainer,
+  .saDialogPane,
+  .saDialogPaneLeft,
+  .saDialogPaneRight,
+  .forceSearchAssistantSecondaryPanel {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  /* Right pane help content */
+  .assistant-dialog-help-panel,
+  .assistant-dialog-help-panel__child {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  .assistant-dialog-help-panel__title,
+  h2.assistant-dialog-help-panel__title,
+  .assistant-dialog-help-panel__subtitle {
+    color: var(--ctp-text) !important;
+  }
+  .assistant-dialog-help-panel__subtitletips {
+    color: var(--ctp-subtext1) !important;
+  }
+  .assistant-dialog-help-panel__link {
+    color: var(--ctp-accent) !important;
+  }
+  .assistant-dialog-help-panel__link:hover {
+    color: var(--ctp-blue) !important;
+  }
+  /* Left pane: instant results list and individual suggestion rows */
+  .instant-results-list,
+  .instant-result-item,
+  .instant-result-item-query-suggestion {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  .instant-result-item.focused,
+  .instant-result-item[aria-selected="true"],
+  .instant-result-item:hover {
+    background: var(--ctp-surface0) !important;
+  }
+  .instant-result-item .primary,
+  .instant-result-item span[title] {
+    color: var(--ctp-text) !important;
+  }
+  .instant-result-item .secondary {
+    color: var(--ctp-subtext1) !important;
+  }
+  /* Separator between suggestion groups */
+  .instant-result-item div[data-separator],
+  div[data-separator].slds-border_top {
+    border-color: var(--ctp-surface1) !important;
+  }
+  /* SLDS double-dash text utilities used inside suggestion rows.
+     Our existing rules cover the underscore variants (slds-text-color_default
+     etc.); SF uses the double-dash variants here, so they need their own
+     rules. Scoping to the search dialog so we don't blanket every page. */
+  .forceSearchAssistantDialog .slds-text-color--default,
+  .forceSearchAssistantDialog .slds-text-body--regular {
+    color: var(--ctp-text) !important;
+  }
+  .forceSearchAssistantDialog .slds-text-heading--label-normal {
+    color: var(--ctp-subtext1) !important;
+  }
+  /* Loading-state skeleton placeholders. While suggestions are fetching,
+     SF renders <search_dialog-assistant-suggestion-item-placeholder> with
+     pale shimmer bars per row (one icon square + two text bars). Defaults
+     are near-white against our dark dropdown — toning to surface1 so they
+     read as "loading" without screaming. */
+  .assistantSuggestionItemPlaceholder_wrapper {
+    background: transparent !important;
+  }
+  .assistantSuggestionItemPlaceholder_wrapper_icon,
+  .assistantSuggestionItemPlaceholder_wrapper_rows_row {
+    background: var(--ctp-surface1) !important;
+  }
+
+  /* Search Results sidebar loading placeholder.
+     Distinct from the suggestion-item placeholder above: this one renders
+     the "Search Results by Object" left nav while it's loading. Wrapper is
+     .navContainer holding .forceSearchScopesListPlaceholder, and each bar
+     is a .text element with size modifiers (text-short, text-long, etc.).
+     SF defaults the container to white and the bars to a dark fill — we
+     flip both: container to mantle, bars to surface1. */
+  .navContainer,
+  .forceSearchScopesList,
+  .scopesListPlaceholderContainer,
+  .forceSearchScopesListPlaceholder,
+  .forceSearchScopesListPlaceholder .placeholder,
+  .forceSearchScopesListPlaceholder .placeholder .body,
+  .forceSearchScopesListPlaceholder .placeholder .field {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+  }
+  .slds-nav-vertical__title {
+    color: var(--ctp-text) !important;
+  }
+  .forceSearchScopesListPlaceholder .placeholder .text {
+    background: var(--ctp-surface1) !important;
   }
 
   /* ---- App Launcher (waffle menu) ----
@@ -1762,6 +1871,144 @@
     color: var(--ctp-subtext1) !important;
   }
 
+  /* ---- "Help for this Page" link ----
+     Legacy VF pages render a help link in the page header — a .helpLink
+     span paired with an orange "?" orb icon. Matching the info-banner
+     palette: yellow text + yellow-toned icon, so help affordances read
+     as a consistent "informational" family. The icon is typically a
+     Salesforce sprite/gif (.helpOrb is the conventional class); we tint
+     it with a CSS filter since the asset itself is server-side and not
+     easy to swap. If the icon class turns out to be different we'll
+     adjust based on the live DOM. */
+  .helpLink,
+  .helpLink span,
+  span.helpLink {
+    color: var(--ctp-yellow) !important;
+  }
+  .helpLink:hover,
+  span.helpLink:hover {
+    color: var(--ctp-peach) !important;
+  }
+  .helpOrb,
+  img.helpOrb,
+  .helpLink + img,
+  .helpLink img {
+    filter: hue-rotate(15deg) brightness(1.1) saturate(0.85) !important;
+  }
+
+  /* ---- New Sandbox creation page: license comparison table ----
+     Legacy VF (editSandbox.apexp) renders a four-column license-type
+     comparison grid as table#licenseInfo with custom classes per cell:
+       .licenseHead — th for each license tier
+       .licenseTypes — div inside th with the tier name
+       .licenseItem — bullet list of features per tier
+       .licenseUsage — "X of Y Licenses In Use" counter
+       .licenseTail — bottom row with the Next button + warnings
+     SF defaults the table to white with .greenText / .redText / .blackText
+     utility classes used inline for color-coding availability. Theming the
+     table cells dark and remapping the color utilities to mocha tones. */
+  table#licenseInfo {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table#licenseInfo thead th,
+  table#licenseInfo th.licenseHead {
+    background: var(--ctp-mantle) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table#licenseInfo td {
+    background: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  table#licenseInfo .licenseTypes {
+    color: var(--ctp-accent) !important;
+    font-weight: 600 !important;
+  }
+  table#licenseInfo .boldText {
+    color: var(--ctp-text) !important;
+  }
+  table#licenseInfo ul.licenseItem,
+  table#licenseInfo ul.licenseItem li {
+    color: var(--ctp-text) !important;
+  }
+  table#licenseInfo td.licenseTail {
+    background: var(--ctp-mantle) !important;
+    border-top: 1px solid var(--ctp-surface1) !important;
+  }
+
+  /* SF inline color-utility classes used on this page and elsewhere.
+     The base rules are unscoped so they apply on any legacy VF page that
+     uses these classes. The #licenseInfo-scoped duplicates exist purely
+     to outrank the `table#licenseInfo .boldText` rule above, which has
+     specificity (0,1,1,0) and would otherwise force the licenseUsage spans
+     (class="boldText licenseUsage") to text color and erase the
+     green/red. (0,1,2,0) > (0,1,1,0), so green/red wins. */
+  .greenText {
+    color: var(--ctp-green) !important;
+  }
+  .redText {
+    color: var(--ctp-red) !important;
+  }
+  .blackText {
+    color: var(--ctp-subtext1) !important;
+  }
+  #licenseInfo .greenText,
+  #licenseInfo .greenText .boldText,
+  #licenseInfo .greenText .licenseUsage {
+    color: var(--ctp-green) !important;
+  }
+  #licenseInfo .redText,
+  #licenseInfo .redText .boldText,
+  #licenseInfo .redText .licenseUsage {
+    color: var(--ctp-red) !important;
+  }
+
+  /* ---- Legacy Visualforce info/message banners ----
+     Pages like Deployment Status render heads-up callouts as
+       <div class="message infoM3">
+         <table class="messageTable">
+           <td><img class="msgIcon" alt="info" ...></td>
+           <td class="messageCell">
+             <div class="messageText"><h4>Title</h4>...body...</div>
+           </td>
+         </table>
+       </div>
+     The pale-yellow tint lives on the outer .message.infoM3 wrapper, NOT
+     on the .messageTable itself — earlier rules scoped to .messageTable
+     painted surface0 on the table but the wrapper's yellow still bled
+     through every transparent cell. Targeting the wrapper directly here.
+     Severity classes follow SF's convention .infoM3 / .warningM3 /
+     .errorM3 / .confirmM3 — only info is done for now; add other variants
+     as they appear. */
+  .message.infoM3 {
+    background: var(--ctp-surface0) !important;
+    border-left: 4px solid var(--ctp-yellow) !important;
+    color: var(--ctp-text) !important;
+  }
+  .message.infoM3 .messageTable,
+  .message.infoM3 td,
+  .message.infoM3 .messageCell,
+  .message.infoM3 .messageText,
+  .message.infoM3 .messageText > *,
+  .message.infoM3 .messageText span,
+  .message.infoM3 .messageText div {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  .message.infoM3 .messageText h4 {
+    color: var(--ctp-yellow) !important;
+    font-weight: 600 !important;
+  }
+  .message.infoM3 .messageText a {
+    color: var(--ctp-accent) !important;
+  }
+  .message.infoM3 .messageText a:hover {
+    color: var(--ctp-blue) !important;
+  }
+
   /* ---- Visualforce Deployment Status / Deployment Details page ----
      Uses ID selectors (unusual for SF but this is an older VF page) plus
      ExtJS-rendered SVG donut charts with hardcoded inline rgb() fills. */
@@ -1932,6 +2179,18 @@
   table.detailList .dataCol.empty {
     background: transparent !important;
     border-color: transparent !important;
+  }
+  /* Inline form labels inside data cells (e.g., radio-button option labels
+     "200 MB", "400 MB (...)" inside a fieldset). Plain <label> elements
+     don't inherit our cell text color because SF ships a low-specificity
+     `label { color: ... }` rule that wins via cascade order on the label
+     element itself. Scoping to detailList so we don't blanket every label
+     on every page. */
+  table.detailList fieldset label,
+  table.detailList .requiredInput label,
+  table.detailList td.data2Col label,
+  table.detailList td.dataCol label {
+    color: var(--ctp-text) !important;
   }
   /* Legacy form buttons (Edit, Delete, Clone, Save, Cancel) */
   input.btn,
