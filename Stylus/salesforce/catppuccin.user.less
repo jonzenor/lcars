@@ -2,7 +2,7 @@
 @name           Salesforce Catppuccin
 @namespace      github.com/jonzenor/lcars/Stylus/salesforce
 @homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/salesforce
-@version        0.1.47
+@version        0.1.48
 @updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/salesforce/catppuccin.user.less
 @supportURL     https://github.com/jonzenor/lcars/issues
 @description    Soothing pastel theme for Salesforce Lightning Experience, with a distinct header stripe color for sandboxes so you always know which environment you're in at a glance.
@@ -519,6 +519,14 @@
   .slds-nav-vertical,
   .slds-nav-vertical__section {
     background: transparent !important;
+    color: var(--ctp-text) !important;
+  }
+  /* Outer wrapper around the vertical nav on list pages like
+     Dashboards / Reports — holds the .slds-nav-vertical, but extends past
+     the last item so the empty area below shows the container's bg.
+     Without this, that empty area was reading as plain white. */
+  .sidebarContainer {
+    background: var(--ctp-mantle) !important;
     color: var(--ctp-text) !important;
   }
   .slds-nav-vertical__item {
