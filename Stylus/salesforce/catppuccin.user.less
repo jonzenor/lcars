@@ -2,7 +2,7 @@
 @name           Salesforce Catppuccin
 @namespace      github.com/jonzenor/lcars/Stylus/salesforce
 @homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/salesforce
-@version        0.1.48
+@version        0.1.49
 @updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/salesforce/catppuccin.user.less
 @supportURL     https://github.com/jonzenor/lcars/issues
 @description    Soothing pastel theme for Salesforce Lightning Experience, with a distinct header stripe color for sandboxes so you always know which environment you're in at a glance.
@@ -1972,6 +1972,51 @@
   #licenseInfo .redText .boldText,
   #licenseInfo .redText .licenseUsage {
     color: var(--ctp-red) !important;
+  }
+
+  /* ---- Long-running tests warning callout (Deployment Status page) ----
+     Distinct widget from .message.infoM3 — custom DOM that flags Apex tests
+     exceeding a runtime threshold after a deployment:
+       <div class="longRunningTests">
+         <div id="longRunningTestsHeader">
+           <img class="statusImage" src="cautiontrianglewhite.png">
+           <span class="errorHeader">Long-Running Tests</span>
+           <span class="warningInfo">...</span>
+         </div>
+         <table class="warnings">
+           <tr><td class="warningInfo">testName</td><td>duration</td></tr>
+         </table>
+       </div>
+     SF defaults the box to a pale yellow tint that clashes with our dark
+     theme. Reskinning to the standard warning callout pattern: dark surface
+     + peach left-accent (Catppuccin's warning color, sitting between yellow
+     info and red error in semantic severity). The .errorHeader class name
+     is misleading — this widget is a warning, not an error. */
+  .longRunningTests {
+    background: var(--ctp-surface0) !important;
+    border-left: 4px solid var(--ctp-peach) !important;
+    color: var(--ctp-text) !important;
+  }
+  .longRunningTests #longRunningTestsHeader,
+  .longRunningTests .errorHeader,
+  .longRunningTests .warningInfo,
+  .longRunningTests table.warnings,
+  .longRunningTests table.warnings tr,
+  .longRunningTests table.warnings td {
+    background: transparent !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+  .longRunningTests .errorHeader {
+    color: var(--ctp-peach) !important;
+    font-weight: 600 !important;
+  }
+  .longRunningTests a.longRunning,
+  .longRunningTests a {
+    color: var(--ctp-accent) !important;
+  }
+  .longRunningTests a:hover {
+    color: var(--ctp-blue) !important;
   }
 
   /* ---- Legacy Visualforce info/message banners ----
