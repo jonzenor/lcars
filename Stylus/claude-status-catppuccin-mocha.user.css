@@ -1,0 +1,345 @@
+/* ==UserStyle==
+@name           Claude Status - Catppuccin Mocha
+@namespace      github.com/catppuccin
+@version        1.0.0
+@description    Catppuccin Mocha theme for status.claude.com
+@author         FinalAsgard
+@preprocessor   default
+@var            select accent "Accent color" {
+  "Rosewater":   "#f5e0dc",
+  "Flamingo":    "#f2cdcd",
+  "Pink":        "#f5c2e7",
+  "Mauve*":      "#cba6f7",
+  "Red":         "#f38ba8",
+  "Maroon":      "#eba0ac",
+  "Peach":       "#fab387",
+  "Yellow":      "#f9e2af",
+  "Green":       "#a6e3a1",
+  "Teal":        "#94e2d5",
+  "Sky":         "#89dceb",
+  "Sapphire":    "#74c7ec",
+  "Blue":        "#89b4fa",
+  "Lavender":    "#b4befe"
+}
+==/UserStyle== */
+
+@-moz-document domain("status.claude.com") {
+  :root {
+    --ctp-base:      #1e1e2e;
+    --ctp-mantle:    #181825;
+    --ctp-crust:     #11111b;
+    --ctp-surface0:  #313244;
+    --ctp-surface1:  #45475a;
+    --ctp-surface2:  #585b70;
+    --ctp-overlay0:  #6c7086;
+    --ctp-overlay1:  #7f849c;
+    --ctp-overlay2:  #9399b2;
+    --ctp-subtext0:  #a6adc8;
+    --ctp-subtext1:  #bac2de;
+    --ctp-text:      #cdd6f4;
+    --ctp-blue:      #89b4fa;
+    --ctp-lavender:  #b4befe;
+    --ctp-mauve:     #cba6f7;
+    --ctp-pink:      #f5c2e7;
+    --ctp-red:       #f38ba8;
+    --ctp-maroon:    #eba0ac;
+    --ctp-peach:     #fab387;
+    --ctp-yellow:    #f9e2af;
+    --ctp-green:     #a6e3a1;
+    --ctp-teal:      #94e2d5;
+    --ctp-sapphire:  #74c7ec;
+
+    /* Stylus injects the @var dropdown's selected hex as `--accent` on the
+       document root. We reference it directly throughout (an alias like
+       `--ctp-accent: var(--accent)` does not resolve on Chrome's Stylus
+       build — chained custom properties come out empty). */
+
+    color-scheme: dark;
+  }
+
+  /* ── Body & layout ────────────────────────────────────────────────────── */
+  body,
+  .layout-content.status.status-api .section .example-container .example-opener .color-secondary,
+  .grouped-items-selector,
+  .layout-content.status.status-full-history .history-nav a.current,
+  div[id^="subscribe-modal"] .modal-footer,
+  div[id^="subscribe-modal"],
+  div[id^="updates-dropdown"] .updates-dropdown-section,
+  #uptime-tooltip .tooltip-box {
+    background-color: var(--ctp-base) !important;
+  }
+
+  #uptime-tooltip .pointer-container .pointer-smaller {
+    border-bottom-color: var(--ctp-base) !important;
+  }
+
+  /* ── Masthead / header ────────────────────────────────────────────────── */
+  .masthead-container,
+  .masthead {
+    background-color: var(--ctp-surface1) !important;
+  }
+
+  .masthead,
+  .masthead h1,
+  .masthead h2,
+  .masthead p,
+  .masthead span:not(.icon-container),
+  .logo-container,
+  .logo-container * {
+    color: var(--ctp-text) !important;
+  }
+
+  /* ── Primary text ────────────────────────────────────────────────────── */
+  body.status,
+  .color-primary,
+  .color-primary:hover,
+  .layout-content.status-index .status-day .update-title.impact-none a,
+  .layout-content.status-index .status-day .update-title.impact-none a:hover,
+  .layout-content.status-index .timeframes-container .timeframe.active,
+  .layout-content.status-full-history .month .incident-container .impact-none,
+  .layout-content.status.status-index .incidents-list .incident-title.impact-none a,
+  .incident-history .impact-none,
+  .layout-content.status .grouped-items-selector.inline .grouped-item.active,
+  .layout-content.status.status-full-history .history-nav a.current,
+  .layout-content.status.status-full-history .history-nav a:not(.current):hover,
+  div[id^="subscribe-modal"] .modal-header .close,
+  .grouped-item-label,
+  #uptime-tooltip .tooltip-box .tooltip-content .related-events .related-event a.related-event-link {
+    color: var(--ctp-text) !important;
+  }
+
+  .layout-content.status.status-index .components-statuses .component-container .name {
+    color: var(--ctp-text) !important;
+  }
+
+  /* ── Secondary text ──────────────────────────────────────────────────── */
+  small,
+  .layout-content.status .table-row .date,
+  .color-secondary,
+  .layout-content.status .grouped-items-selector.inline .grouped-item,
+  .layout-content.status.status-full-history .history-footer .pagination a.disabled,
+  .layout-content.status.status-full-history .history-nav a,
+  #uptime-tooltip .tooltip-box .tooltip-content .related-events #related-event-header {
+    color: var(--ctp-subtext0) !important;
+  }
+
+  /* ── Borders ─────────────────────────────────────────────────────────── */
+  body.status .layout-content.status .border-color,
+  .date.border-color,
+  hr,
+  .tooltip-base,
+  .markdown-display table,
+  div[id^="subscribe-modal"],
+  #uptime-tooltip .tooltip-box {
+    border-color: var(--ctp-surface0) !important;
+  }
+
+  div[id^="subscribe-modal"] .modal-footer,
+  .markdown-display table td {
+    border-top-color: var(--ctp-surface0) !important;
+  }
+
+  .markdown-display table td + td,
+  .markdown-display table th + th {
+    border-left-color: var(--ctp-surface0) !important;
+  }
+
+  div[id^="subscribe-modal"] .modal-header,
+  #uptime-tooltip .pointer-container .pointer-larger {
+    border-bottom-color: var(--ctp-surface0) !important;
+  }
+
+  #uptime-tooltip .tooltip-box .outage-field {
+    background-color: var(--ctp-surface0) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+
+  /* ── Links ───────────────────────────────────────────────────────────── */
+  a,
+  a:hover,
+  .layout-content.status-index .page-footer span a:hover,
+  .layout-content.status-index .timeframes-container .timeframe:not(.active):hover,
+  .layout-content.status-incident .subheader a:hover {
+    color: var(--ctp-blue) !important;
+  }
+
+  /* Links inside colored status banners need dark text to stay readable on
+     pastel mocha backgrounds (red/peach/yellow/blue/green are all light). */
+  .unresolved-incident .incident-title a,
+  .unresolved-incident .incident-title a:hover,
+  .layout-content.status.status-index .page-status a,
+  .layout-content.status.status-index .page-status a:hover {
+    color: var(--ctp-crust) !important;
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────────────────── */
+  .flat-button,
+  .masthead .updates-dropdown-container .show-updates-dropdown,
+  .layout-content.status-full-history .show-filter.open {
+    background-color: var(--accent) !important;
+    color: var(--ctp-crust) !important;
+  }
+
+  .flat-button *,
+  .masthead .updates-dropdown-container .show-updates-dropdown *,
+  .layout-content.status-full-history .show-filter.open * {
+    color: var(--ctp-crust) !important;
+  }
+
+  /* ── Status: Operational (green) ─────────────────────────────────────── */
+  .layout-content.status.status-index .page-status.status-none {
+    background-color: var(--ctp-green) !important;
+    color: var(--ctp-crust) !important;
+  }
+
+  .layout-content.status-index .components-statuses .component-container.status-green:after,
+  .status-green .icon-indicator,
+  .components-container .component-inner-container.status-green .component-status,
+  .components-container .component-inner-container.status-green .icon-indicator {
+    color: var(--ctp-green) !important;
+  }
+
+  /* ── Status: Critical (red) ──────────────────────────────────────────── */
+  .layout-content.status.status-index .status-day .update-title.impact-critical a,
+  .layout-content.status.status-index .status-day .update-title.impact-critical a:hover,
+  .layout-content.status.status-index .page-status.status-critical,
+  .layout-content.status.status-index .unresolved-incident.impact-critical .incident-title,
+  .flat-button.background-red {
+    background-color: var(--ctp-red) !important;
+    color: var(--ctp-crust) !important;
+  }
+
+  .layout-content.status-index .components-statuses .component-container.status-red:after,
+  .layout-content.status-full-history .month .incident-container .impact-critical,
+  .layout-content.status-incident .incident-name.impact-critical,
+  .layout-content.status.status-index .incidents-list .incident-title.impact-critical a,
+  .status-red .icon-indicator,
+  .incident-history .impact-critical,
+  .components-container .component-inner-container.status-red .component-status,
+  .components-container .component-inner-container.status-red .icon-indicator {
+    color: var(--ctp-red) !important;
+  }
+
+  .layout-content.status.status-index .unresolved-incident.impact-critical .updates {
+    border-color: var(--ctp-red) !important;
+  }
+
+  /* ── Status: Major outage (peach) ────────────────────────────────────── */
+  .layout-content.status.status-index .status-day .update-title.impact-major a,
+  .layout-content.status.status-index .status-day .update-title.impact-major a:hover,
+  .layout-content.status.status-index .page-status.status-major,
+  .layout-content.status.status-index .unresolved-incident.impact-major .incident-title {
+    background-color: var(--ctp-peach) !important;
+    color: var(--ctp-crust) !important;
+  }
+
+  .layout-content.status-index .components-statuses .component-container.status-orange:after,
+  .layout-content.status-full-history .month .incident-container .impact-major,
+  .layout-content.status-incident .incident-name.impact-major,
+  .layout-content.status.status-index .incidents-list .incident-title.impact-major a,
+  .status-orange .icon-indicator,
+  .incident-history .impact-major,
+  .components-container .component-inner-container.status-orange .component-status,
+  .components-container .component-inner-container.status-orange .icon-indicator {
+    color: var(--ctp-peach) !important;
+  }
+
+  .layout-content.status.status-index .unresolved-incident.impact-major .updates {
+    border-color: var(--ctp-peach) !important;
+  }
+
+  /* ── Status: Minor (yellow) ──────────────────────────────────────────── */
+  .layout-content.status.status-index .status-day .update-title.impact-minor a,
+  .layout-content.status.status-index .status-day .update-title.impact-minor a:hover,
+  .layout-content.status.status-index .page-status.status-minor,
+  .layout-content.status.status-index .unresolved-incident.impact-minor .incident-title,
+  .layout-content.status.status-index .scheduled-incidents-container .tab {
+    background-color: var(--ctp-yellow) !important;
+    color: var(--ctp-crust) !important;
+  }
+
+  .layout-content.status-index .components-statuses .component-container.status-yellow:after,
+  .layout-content.status-full-history .month .incident-container .impact-minor,
+  .layout-content.status-incident .incident-name.impact-minor,
+  .layout-content.status.status-index .incidents-list .incident-title.impact-minor a,
+  .status-yellow .icon-indicator,
+  .incident-history .impact-minor,
+  .components-container .component-inner-container.status-yellow .component-status,
+  .components-container .component-inner-container.status-yellow .icon-indicator,
+  .layout-content.status.manage-subscriptions .confirmation-infobox .fa {
+    color: var(--ctp-yellow) !important;
+  }
+
+  .layout-content.status.status-index .unresolved-incident.impact-minor .updates,
+  .layout-content.status.status-index .scheduled-incidents-container {
+    border-color: var(--ctp-yellow) !important;
+  }
+
+  /* ── Status: Maintenance (blue) ──────────────────────────────────────── */
+  .layout-content.status.status-index .status-day .update-title.impact-maintenance a,
+  .layout-content.status.status-index .status-day .update-title.impact-maintenance a:hover,
+  .layout-content.status.status-index .page-status.status-maintenance,
+  .layout-content.status.status-index .unresolved-incident.impact-maintenance .incident-title {
+    background-color: var(--ctp-blue) !important;
+    color: var(--ctp-crust) !important;
+  }
+
+  .layout-content.status-index .components-statuses .component-container.status-blue:after,
+  .layout-content.status-full-history .month .incident-container .impact-maintenance,
+  .layout-content.status-incident .incident-name.impact-maintenance,
+  .layout-content.status.status-index .incidents-list .incident-title.impact-maintenance a,
+  .status-blue .icon-indicator,
+  .incident-history .impact-maintenance,
+  .components-container .component-inner-container.status-blue .component-status,
+  .components-container .component-inner-container.status-blue .icon-indicator {
+    color: var(--ctp-blue) !important;
+  }
+
+  .layout-content.status.status-index .unresolved-incident.impact-maintenance .updates,
+  .layout-content.status.status-index .scheduled-incidents-container {
+    border-color: var(--ctp-blue) !important;
+  }
+
+  /* ── Subscribe dropdown nav ───────────────────────────────────────────── */
+  .updates-dropdown-nav {
+    background-color: var(--ctp-mantle) !important;
+    border-bottom-color: var(--ctp-surface0) !important;
+  }
+
+  .updates-dropdown-nav a {
+    color: var(--ctp-subtext0) !important;
+  }
+
+  .updates-dropdown-nav a[aria-selected="true"],
+  .updates-dropdown-nav a:hover {
+    color: var(--accent) !important;
+    border-bottom-color: var(--accent) !important;
+  }
+
+  /* ── Form inputs ─────────────────────────────────────────────────────── */
+  input[type="text"],
+  input[type="email"],
+  select,
+  .controls input {
+    background-color: var(--ctp-surface0) !important;
+    color: var(--ctp-text) !important;
+    border-color: var(--ctp-surface1) !important;
+  }
+
+  input::placeholder {
+    color: var(--ctp-overlay0) !important;
+  }
+
+  /* ── Uptime legend ───────────────────────────────────────────────────── */
+  .components-section .components-uptime-link,
+  .layout-content.status .shared-partial.uptime-90-days-wrapper .legend .legend-item,
+  .layout-content.status .shared-partial.uptime-90-days-wrapper .legend .legend-item.light {
+    color: var(--ctp-subtext0) !important;
+    opacity: 1 !important;
+  }
+
+  .layout-content.status .shared-partial.uptime-90-days-wrapper .legend .spacer {
+    background: var(--ctp-surface0) !important;
+    opacity: 1 !important;
+  }
+}
