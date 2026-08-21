@@ -52,9 +52,21 @@ Convention varies by style:
 - **`Stylus/agility-catppuccin-mocha.user.css`** — vanilla CSS (`@preprocessor default`), palette inlined as `--ctp-*` custom properties, Stylus injects the user-selected accent hex as `--accent`. **Important constraint baked into the file's comments: chained CSS custom properties (e.g. `--ctp-accent: var(--accent)`) do NOT resolve in Chrome's Stylus build — they come out empty. Always reference vars directly; never alias.**
 - **`Stylus/salesforce/catppuccin.user.less`** — Less (`@preprocessor less`), imports catppuccin's shared lib at `https://userstyles.catppuccin.com/lib/lib.less` to get `#lib.palette()`, `#lib.css-variables()`, `#lib.defaults()`. Mirrors [catppuccin/userstyles](https://github.com/catppuccin/userstyles) `styles/<site>/` upstream convention so the file could be upstreamed by copy. Same chained-var constraint applies — see the file's header comment.
 
-The two styles use different preprocessors intentionally: the agility one predates the salesforce one and uses the simpler vanilla-CSS approach; the salesforce one was authored against upstream's Less convention to keep an upstreaming option open. Future styles should pick whichever fits — neither is "the standard."
+- **`Stylus/okta/catppuccin.user.less`** — Less, same lib convention as the salesforce style, but note the lib import now points at the **versioned** path `https://userstyles.catppuccin.com/lib/std/v1.less` (the old `lib/lib.less` is a one-line forwarder to it). Exposes `lightFlavor` + `darkFlavor` + `accentColor` selects, so only the `--ctp-*` *definitions* are emitted per color-scheme while the ruleset itself is emitted once. Ships with a companion **userscript** — see below.
+
+The three styles use different preprocessors intentionally: the agility one predates the others and uses the simpler vanilla-CSS approach; the salesforce and okta ones were authored against upstream's Less convention to keep an upstreaming option open. Future styles should pick whichever fits — neither is "the standard."
 
 The salesforce style also includes a per-environment header stripe (red on prod, mauve on sandboxes) driven by `@-moz-document` URL-pattern matching — no org-specific data in the file, works for any Salesforce user.
+
+### Shadow DOM: when a userstyle is not enough
+
+`Stylus/okta/` is the first style in this repo that **cannot** be done with Stylus alone, and the reason generalizes. Okta renders its dashboard navigation shell inside a real shadow root (`attachShadow({mode:"open"})` with `:host { all: initial }`), styled by Emotion from a **JavaScript** token object — no CSS custom property to override, no `::part()` exposed. Document CSS has no path in.
+
+So that directory ships two files: the `.user.less` for the light-DOM content area, and `okta-shell-catppuccin.user.js` (Violentmonkey/Tampermonkey) for the shell. The userscript's primary mechanism is *not* CSS injection — it intercepts `window._oktaEnduser.primaryColor` at `document-start` so the app renders itself themed, which survives class-name churn. Adopting a constructed `CSSStyleSheet` into the open shadow root is the secondary pass (constructed sheets bypass the nonce CSP).
+
+**The general lesson for future styles:** before writing rules, check whether the target renders into a shadow root. If it does, look for (a) brand/theme values the app reads from a global at boot, then (b) `mode:"open"` + `adoptedStyleSheets`. Contrast with Salesforce, where LWC shadow roots consume `--lwc-*` custom properties — those *do* inherit across the boundary, which is why that style works as pure CSS.
+
+Full write-up in `Stylus/okta/README.md`.
 
 ## Ghostty config paths
 
