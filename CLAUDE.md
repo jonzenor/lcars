@@ -62,6 +62,7 @@ Convention varies by style:
   - **One token must be a literal.** `--focusOutlineColorRGB` is consumed as `rgba(var(--focusOutlineColorRGB), 1)`, so it is emitted per flavor from the Less `@accent` via `red()/green()/blue()` inside the flavor branch, on the `body[data-theme]` selectors. Everything else is `var(--ctp-*)` emitted once.
   - **The Space theme hardcodes box backgrounds at (0,2,1)** (`body[data-theme=space] .verseset`); restated as `body[data-theme] .verseset` to match specificity.
   - **Flot chart legends on /stats/ use inline styles**, so those three rules are the only `!important` in the file.
+  - **The dashboard heatmap is cal-heatmap v4 with inline fills from a continuous D3 Greens ramp.** Zero-activity days come out near-white. Can't be matched or overridden per color, so data cells (`rect.graph-rect[style]`/`[fill]`) get `filter: invert(1) hue-rotate(180deg) contrast(0.75) brightness(1.1)`, emitted only for dark flavors. The `.q1`–`.q7` rules in the site CSS are v3 leftovers and do nothing.
   - Icons are FontAwesome glyphs — no polarity work needed, unlike esv.
 
 The five styles use different preprocessors intentionally: the agility one predates the others and uses the simpler vanilla-CSS approach; the salesforce, okta, esv, and learnscripture ones were authored against upstream's Less convention to keep an upstreaming option open. Future styles should pick whichever fits — neither is "the standard."

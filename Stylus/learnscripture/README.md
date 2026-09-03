@@ -39,7 +39,7 @@ Each of the site's themes is one block of about eighteen CSS custom properties d
 --focusOutlineColor / --focusOutlineColorRGB
 ```
 
-Override that block and roughly three quarters of the UI follows. The rest of the file mops up hardcoded grays: the secondary `.btn` gradient, form borders, `hr` and table rules, the mobile sidepanel, notices, the stats heatmap, the Flot chart legends, and the whole learn/test screen.
+Override that block and roughly three quarters of the UI follows. The rest of the file mops up hardcoded grays: the secondary `.btn` gradient, form borders, `hr` and table rules, the mobile sidepanel, notices, the dashboard heatmap, the Flot chart legends, and the whole learn/test screen.
 
 ### Surface mapping
 
@@ -77,6 +77,30 @@ The learn/test screen is the only part of the site that's entirely hardcoded gra
 - **Hidden words** (`.blurry`) are rendered as transparent text with a blurred text-shadow. The site's shadow is black, which disappears on a dark canvas and makes the words vanish rather than blur. The shadow is recolored to `subtext0`.
 - **The typing box** (`#id-typing`) floats over the current word. It gets a `base` fill and an accent border so it reads as an input rather than a gap.
 - **Progress bar** goes from gray to accent. The cyan glow on "perfect test" and "verse learnt" point events is kept, recolored to `teal`.
+
+## Dashboard heatmap
+
+The learning-events calendar is [cal-heatmap](https://cal-heatmap.com/) 4.1, configured with D3's continuous **Greens** scheme over the domain `[0, 10, 20, 35, 55, 80]`. It writes each cell's fill inline from that interpolator. Every past day is fed a value, so a zero-activity day gets `Greens(0)`, which is `#f7fcf5`: months of near-white squares on a dark canvas. (Future days have no data, take the CSS `.graph-rect` fill, and were already fine.)
+
+The colors are arbitrary `rgb()` values from a continuous ramp, so there is nothing to match with an attribute selector, and a single `!important` fill would flatten the intensity ramp. Instead the data cells get a CSS filter that remaps the ramp:
+
+```css
+filter: invert(1) hue-rotate(180deg) contrast(0.75) brightness(1.1);
+```
+
+`invert()` flips white to black and dark green to pink, `hue-rotate(180deg)` swings the pink back to green, and `contrast()` / `brightness()` lift the floor off pure black. Sampled against the Greens ramp:
+
+| Input value | Site color | After filter |
+| --- | --- | --- |
+| 0 | `#f7fcf5` | `#242823` |
+| 0.5 | `#41ab5d` | `#3f9757` |
+| 1 | `#00441b` | `#a2dab8` |
+
+Mocha's `green` is `#a6e3a1`, so the top of the ramp lands close to the palette without ever reading it. Data cells are selected by `rect.graph-rect[style]` and `[fill]` so future cells, which carry neither, stay on their `surface0` CSS fill. Zero days come out a shade darker than that, which turns out to be a useful "recorded, but nothing" distinction.
+
+Strokes pass through the same filter, so the hover stroke on data cells is set to `surface0`, which filters to a light gray. The red "today" highlight filters to a muted red and is left alone.
+
+The remap is emitted only for dark flavors, via a `when not (@f = latte)` guard: on a Latte base the site's Greens ramp is already correct, and the filter would invert it.
 
 ## Flot legends
 

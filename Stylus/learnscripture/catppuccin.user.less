@@ -2,7 +2,7 @@
 @name           LearnScripture.net Catppuccin
 @namespace      github.com/jonzenor/lcars/Stylus/learnscripture
 @homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/learnscripture
-@version        0.1.0
+@version        0.1.1
 @updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/learnscripture/catppuccin.user.less
 @supportURL     https://github.com/jonzenor/lcars/issues
 @description    Soothing pastel theme for LearnScripture.net. Themes the dashboard, verse chooser, groups, stats heatmap, and the learn/test screen. Works on top of any of the site's own themes (Calm, Bubblegum, Space).
@@ -150,6 +150,27 @@
   --helpTourHighlightColor: var(--ctp-red);
 }
 
+// Heatmap ramp remap -- see the Dashboard heatmap section for the reasoning.
+// Applied only to cells that carry an inline fill (data cells); cal-heatmap
+// may set it as a style or a presentation attribute, so both are matched.
+// Strokes pass through the same filter, so the hover stroke is pre-
+// compensated: surface0 filters to a light gray, text would filter to
+// near-black. The red highlight (today) filters to a muted red, acceptable.
+.ctp-heatmap-remap(@f) when not (@f = latte) {
+  .cal-heatmap-container rect.graph-rect[style],
+  .cal-heatmap-container rect.graph-rect[fill],
+  .graph-legend rect[style],
+  .graph-legend rect[fill] {
+    filter: invert(1) hue-rotate(180deg) contrast(0.75) brightness(1.1);
+  }
+
+  .cal-heatmap-container .graph-subdomain-group rect[style]:hover,
+  .cal-heatmap-container .graph-subdomain-group rect[fill]:hover {
+    stroke: var(--ctp-surface0);
+  }
+}
+.ctp-heatmap-remap(@f) when (@f = latte) {}
+
 @-moz-document domain("learnscripture.net") {
 
   /* ── Palette + tokens ─────────────────────────────────────────────────
@@ -159,16 +180,19 @@
   & when (@forceDark = 1) {
     :root { .ctp-palette(@darkFlavor); }
     .ctp-theme-bodies({ .ctp-literal-tokens(@darkFlavor); });
+    .ctp-heatmap-remap(@darkFlavor);
   }
 
   & when (@forceDark = 0) {
     @media (prefers-color-scheme: light) {
       :root { .ctp-palette(@lightFlavor); }
       .ctp-theme-bodies({ .ctp-literal-tokens(@lightFlavor); });
+      .ctp-heatmap-remap(@lightFlavor);
     }
     @media (prefers-color-scheme: dark) {
       :root { .ctp-palette(@darkFlavor); }
       .ctp-theme-bodies({ .ctp-literal-tokens(@darkFlavor); });
+      .ctp-heatmap-remap(@darkFlavor);
     }
   }
 
@@ -448,9 +472,33 @@
     background-color: color-mix(in srgb, var(--ctp-yellow) 20%, transparent);
   }
 
-  /* ── Stats page: activity heatmap ───────────────────────────────────────
-     cal-heatmap paints SVG rects with hardcoded fills in seven steps of green.
-     Mixed toward the flavor's green so the ramp tracks the live palette. */
+  /* ── Dashboard: activity heatmap (cal-heatmap v4) ───────────────────────
+     The site's CSS still carries v3-era .q1-.q7 class rules, but the calendar
+     is cal-heatmap 4.1 configured with D3's continuous "Greens" scheme
+     (domain [0,10,20,35,55,80]) and it writes each cell's fill INLINE from
+     that interpolator. Two consequences:
+
+       * Every past day is fed a value, so a zero-activity day is Greens(0) =
+         #f7fcf5 -- a near-white square. Months of those on a dark canvas is
+         the glare you noticed.
+       * The colors are arbitrary rgb() from a continuous ramp, so there is
+         nothing to match with an attribute selector, and a single !important
+         fill would flatten the intensity ramp entirely.
+
+     Fix: leave the inline fills alone and run a CSS filter over the data
+     cells that remaps the ramp. invert() flips white->black and dark-green->
+     pink; hue-rotate(180deg) swings the pink back to green; contrast()/
+     brightness() lift the floor off pure black. Sampled against the Greens
+     ramp: 0 -> #242823, 0.5 -> #3f9757, 1 -> #a2dab8 (Mocha green is
+     #a6e3a1). See .ctp-heatmap-remap() below.
+
+     Cells WITHOUT data (future days) carry no inline fill and take the CSS
+     .graph-rect fill, so they are excluded via [style]/[fill] and painted
+     surface0 directly. Zero days come out a shade darker than that, which is
+     a nice accidental "recorded, but nothing" distinction.
+
+     Latte is skipped: the site's Greens ramp on a light base is already
+     correct there, and this remap would invert it. */
 
   #id-heatmap-wrapper {
     border-color: var(--ctp-surface1);
@@ -461,40 +509,8 @@
   }
 
   .cal-heatmap-container .graph-rect,
-  .graph-legend .graph-rect,
-  #id-heatmap-div .cal-heatmap-container .q1 {
+  .graph-legend .graph-rect {
     fill: var(--ctp-surface0);
-    background-color: var(--ctp-surface0);
-  }
-
-  #id-heatmap-div .cal-heatmap-container .q2 {
-    fill: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-surface0));
-    background-color: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-surface0));
-  }
-
-  #id-heatmap-div .cal-heatmap-container .q3 {
-    fill: color-mix(in srgb, var(--ctp-green) 45%, var(--ctp-surface0));
-    background-color: color-mix(in srgb, var(--ctp-green) 45%, var(--ctp-surface0));
-  }
-
-  #id-heatmap-div .cal-heatmap-container .q4 {
-    fill: color-mix(in srgb, var(--ctp-green) 60%, var(--ctp-surface0));
-    background-color: color-mix(in srgb, var(--ctp-green) 60%, var(--ctp-surface0));
-  }
-
-  #id-heatmap-div .cal-heatmap-container .q5 {
-    fill: color-mix(in srgb, var(--ctp-green) 75%, var(--ctp-surface0));
-    background-color: color-mix(in srgb, var(--ctp-green) 75%, var(--ctp-surface0));
-  }
-
-  #id-heatmap-div .cal-heatmap-container .q6 {
-    fill: color-mix(in srgb, var(--ctp-green) 90%, var(--ctp-surface0));
-    background-color: color-mix(in srgb, var(--ctp-green) 90%, var(--ctp-surface0));
-  }
-
-  #id-heatmap-div .cal-heatmap-container .q7 {
-    fill: var(--ctp-green);
-    background-color: var(--ctp-green);
   }
 
   .cal-heatmap-container .graph-subdomain-group rect:hover,
