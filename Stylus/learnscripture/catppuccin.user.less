@@ -1,0 +1,659 @@
+/* ==UserStyle==
+@name           LearnScripture.net Catppuccin
+@namespace      github.com/jonzenor/lcars/Stylus/learnscripture
+@homepageURL    https://github.com/jonzenor/lcars/tree/main/Stylus/learnscripture
+@version        0.1.0
+@updateURL      https://github.com/jonzenor/lcars/raw/main/Stylus/learnscripture/catppuccin.user.less
+@supportURL     https://github.com/jonzenor/lcars/issues
+@description    Soothing pastel theme for LearnScripture.net. Themes the dashboard, verse chooser, groups, stats heatmap, and the learn/test screen. Works on top of any of the site's own themes (Calm, Bubblegum, Space).
+@author         FinalAsgard
+@license        MIT
+
+@preprocessor   less
+
+@var select lightFlavor  "Light flavor" ["latte:Latte*", "frappe:Frappé", "macchiato:Macchiato", "mocha:Mocha"]
+@var select darkFlavor   "Dark flavor"  ["latte:Latte", "frappe:Frappé", "macchiato:Macchiato", "mocha:Mocha*"]
+@var select accentColor  "Accent" ["rosewater:Rosewater", "flamingo:Flamingo", "pink:Pink", "mauve:Mauve*", "red:Red", "maroon:Maroon", "peach:Peach", "yellow:Yellow", "green:Green", "teal:Teal", "sky:Sky", "sapphire:Sapphire", "blue:Blue", "lavender:Lavender"]
+@var checkbox forceDark  "Always use the dark flavor (ignore the OS light/dark setting)" 1
+@var checkbox flatButtons "Flat buttons (drop the site's gradients and drop shadows)" 1
+==/UserStyle== */
+
+@import "https://userstyles.catppuccin.com/lib/std/v1.less";
+
+/* ============================================================================
+   LearnScripture.net Catppuccin
+
+   HOW THE SITE IS PAINTED
+   -----------------------
+   Like esv.org, this site is mostly token-driven. Each of its four built-in
+   themes (Calm, Bubblegum, Bubblegum 2, Space) is one block of ~18 custom
+   properties declared on `body[data-theme=<name>]`:
+
+       --topColor1 / --topColor2        navbar fill, open/pinned dropdowns
+       --topTextColor / --topLinkColor  navbar text and links
+       --topLinkHoverColor
+       --btnColor1 / --btnColor2        primary button gradient stops
+       --btnTextColor
+       --baseBackgroundColor            main content pane
+       --baseTextColor
+       --bgColor1 / --bgBorderColor     .verseset / .borderedbox / .actionset
+       --linkColor / --linkColorHover
+       --footerColor
+       --topWarningColor / --topErrorColor   learn-page ajax status glyphs
+       --focusOutlineColor / --focusOutlineColorRGB
+       --specialFontFamily              (left alone)
+
+   Override that block and roughly three quarters of the UI follows. The rest
+   of this file mops up hardcoded grays: the secondary .btn gradient, form
+   borders, hr/table rules, the sidepanel, notices, the stats heatmap, and the
+   whole learn/test screen (word buttons, typing box, progress bar).
+
+   SPECIFICITY
+   -----------
+   The site's token blocks live on `body[data-theme=calm]` etc. (0,1,1). Ours
+   are declared on the exact same selectors -- Stylus injects after the site's
+   stylesheet, so equal specificity resolves in our favor. A `body:not([data-
+   theme])` fallback covers pages that ship without the attribute.
+
+   The Space theme additionally hardcodes black + a starfield image on
+   .verseset/.actionset/.borderedbox via `body[data-theme=space] .verseset`
+   (0,2,1); those are restated below as `body[data-theme] .verseset` (0,2,1),
+   again winning on order.
+
+   SURFACE MAPPING
+   ---------------
+   The site's layering is: dark outer canvas (body.base-page, #1a1a1a with a
+   texture image) > white .maincontent > light-gray boxes inside it. Mapped:
+
+       body.base-page      -> crust      (texture image removed)
+       .maincontent        -> base
+       .verseset / boxes   -> surface0, surface1 border
+       navbar              -> mantle, dropdowns crust
+       sidepanel           -> mantle, its body/header base
+
+   surface0 is darker than base in Latte and lighter in the dark flavors, so
+   the boxes read as "recessed" in light mode (matching the site's intent) and
+   as "raised" in dark mode, which is what you want on a dark canvas.
+
+   ICONS
+   -----
+   All icons are FontAwesome 4 glyphs, so they inherit `color`. No polarity
+   inversion is needed here, unlike esv.org.
+
+   ONE LITERAL TOKEN
+   -----------------
+   `--focusOutlineColorRGB` is consumed as `rgba(var(--focusOutlineColorRGB), 1)`
+   so it must be a bare "r, g, b" triplet -- there is no way to derive that
+   from var(--ctp-accent) at runtime. It is emitted per flavor from the Less
+   @accent color (red()/green()/blue() at compile time), on the same
+   body[data-theme] selectors as the other tokens so the site's own value
+   cannot shadow it. Everything else references var(--ctp-*) directly.
+
+   Heads up if you're new to this codebase: chained CSS custom properties
+   (e.g. --my-alias: var(--ctp-red)) do NOT resolve in Chrome's Stylus build.
+   Every --ctp-* below is a hex literal at compile time. The site's own tokens
+   below are set to var(--ctp-*) exactly the way the esv style does it, which
+   is known to work in Firefox/Zen.
+   ============================================================================ */
+
+// Emits the full --ctp-* set for one flavor, plus --ctp-accent (which the
+// standard library's css-variables() does not include). @f is substituted to a
+// hex literal at compile time, so nothing chains at runtime.
+.ctp-palette(@f) {
+  @flavor: @f;
+  #lib.palette();
+  #lib.css-variables();
+  #lib.defaults();
+  --ctp-accent: @accent;
+}
+
+// The one token that must be a literal (see header). Emitted on the
+// body[data-theme] selectors inside each flavor branch.
+.ctp-literal-tokens(@f) {
+  @flavor: @f;
+  #lib.palette();
+  --focusOutlineColorRGB: red(@accent), green(@accent), blue(@accent);
+}
+
+// Every selector the site uses to declare its theme tokens, plus a fallback.
+.ctp-theme-bodies(@rules) {
+  body[data-theme=calm],
+  body[data-theme=bubblegum],
+  body[data-theme=bubblegum2],
+  body[data-theme=space],
+  body:not([data-theme]) {
+    @rules();
+  }
+}
+
+/* ── LearnScripture design tokens ───────────────────────────────────────
+   The lever. Everything the site paints from a token follows this block. */
+.ctp-tokens() {
+  --topColor1: var(--ctp-mantle);
+  --topColor2: var(--ctp-crust);
+  --topTextColor: var(--ctp-subtext1);
+  --topLinkColor: var(--ctp-subtext1);
+  --topLinkHoverColor: var(--ctp-text);
+  --btnColor1: var(--ctp-accent);
+  --btnColor2: var(--ctp-accent);
+  --btnTextColor: var(--ctp-crust);
+  --bgColor1: var(--ctp-surface0);
+  --bgBorderColor: var(--ctp-surface1);
+  --linkColor: var(--ctp-accent);
+  --linkColorHover: var(--ctp-lavender);
+  --footerColor: var(--ctp-subtext0);
+  --baseTextColor: var(--ctp-text);
+  --baseBackgroundColor: var(--ctp-base);
+  --topWarningColor: var(--ctp-yellow);
+  --topErrorColor: var(--ctp-red);
+  --focusOutlineColor: color-mix(in srgb, var(--ctp-accent) 70%, transparent);
+  --helpTourHighlightColor: var(--ctp-red);
+}
+
+@-moz-document domain("learnscripture.net") {
+
+  /* ── Palette + tokens ─────────────────────────────────────────────────
+     Only the variable *definitions* are emitted per-mode; every rule after
+     this block references var(--ctp-*), so the ruleset is emitted once. */
+
+  & when (@forceDark = 1) {
+    :root { .ctp-palette(@darkFlavor); }
+    .ctp-theme-bodies({ .ctp-literal-tokens(@darkFlavor); });
+  }
+
+  & when (@forceDark = 0) {
+    @media (prefers-color-scheme: light) {
+      :root { .ctp-palette(@lightFlavor); }
+      .ctp-theme-bodies({ .ctp-literal-tokens(@lightFlavor); });
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { .ctp-palette(@darkFlavor); }
+      .ctp-theme-bodies({ .ctp-literal-tokens(@darkFlavor); });
+    }
+  }
+
+  .ctp-theme-bodies({ .ctp-tokens(); });
+
+  // The learn page re-declares the help-tour color per theme at (0,2,1).
+  body.learn-page[data-theme] {
+    --helpTourHighlightColor: var(--ctp-red);
+  }
+
+  /* ── Page canvas ────────────────────────────────────────────────────── */
+
+  html {
+    scrollbar-color: var(--ctp-surface1) var(--ctp-crust);
+    color-scheme: dark;
+  }
+
+  html,
+  body {
+    background-color: var(--ctp-base);
+    color: var(--ctp-text);
+  }
+
+  // Outer canvas. Every theme sets its own image (Calm's dark texture, Space's
+  // starfield); a flat crust reads cleaner behind a pastel content pane.
+  body.base-page,
+  body.base-page[data-theme] {
+    background-color: var(--ctp-crust);
+    background-image: none;
+  }
+
+  body.base-page .maincontent {
+    background-color: var(--ctp-base);
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--ctp-accent) 30%, transparent);
+  }
+
+  hr {
+    border-bottom-color: var(--ctp-surface1);
+  }
+
+  table td,
+  table tbody th,
+  .bordered-table,
+  .bordered-table th + th,
+  .bordered-table td + td,
+  .bordered-table th + td {
+    border-color: var(--ctp-surface1);
+  }
+
+  a:visited {
+    color: var(--ctp-accent);
+  }
+
+  /* ── Boxes: .verseset / .borderedbox / .actionset ───────────────────────
+     Already themed via --bgColor1 / --bgBorderColor, except that the Space
+     theme paints them black with a starfield at (0,2,1). Restated here on
+     body[data-theme] to cover that at equal specificity. */
+
+  body[data-theme] .verseset,
+  body[data-theme] .actionset,
+  body[data-theme] .borderedbox {
+    background-color: var(--ctp-surface0);
+    background-image: none;
+    color: var(--ctp-text);
+    border-color: var(--ctp-surface1);
+  }
+
+  body[data-theme] .verseset hr,
+  body[data-theme] .actionset hr,
+  body[data-theme] .borderedbox hr {
+    border-bottom-color: var(--ctp-surface1);
+  }
+
+  body[data-theme] .verseset h2,
+  body[data-theme] .actionset h2,
+  body[data-theme] .borderedbox h2,
+  body[data-theme] .verseset h3,
+  body[data-theme] .actionset h3,
+  body[data-theme] .borderedbox h3,
+  body[data-theme] .verseset h4,
+  body[data-theme] .actionset h4,
+  body[data-theme] .borderedbox h4 {
+    color: var(--ctp-text);
+  }
+
+  body[data-theme] .verseset a:link,
+  body[data-theme] .actionset a:link,
+  body[data-theme] .borderedbox a:link,
+  body[data-theme] .verseset a:visited,
+  body[data-theme] .actionset a:visited,
+  body[data-theme] .borderedbox a:visited {
+    color: var(--ctp-accent);
+  }
+
+  body[data-theme] .verseset a:link:hover,
+  body[data-theme] .actionset a:link:hover,
+  body[data-theme] .borderedbox a:link:hover,
+  body[data-theme] .verseset a:visited:hover,
+  body[data-theme] .actionset a:visited:hover,
+  body[data-theme] .borderedbox a:visited:hover {
+    color: var(--ctp-lavender);
+  }
+
+  /* ── Navbar ─────────────────────────────────────────────────────────────
+     Fills from --topColor1/2. Just the leftover text-shadow and the
+     translucent-white active tab. */
+
+  .topbar-wrapper a,
+  nav.topbar a,
+  .nav a {
+    text-shadow: none;
+  }
+
+  nav.topbar .nav-item.active {
+    background-color: var(--ctp-surface0);
+  }
+
+  nav.topbar .nav-dropdown-menu li:not(:last-child):not(.button-item) {
+    border-bottom-color: var(--ctp-surface1);
+  }
+
+  /* ── Sidepanel (mobile menu) ────────────────────────────────────────── */
+
+  .sidepanel .backdrop {
+    background: var(--ctp-crust);
+  }
+
+  .sidepanel .sidepanel-main {
+    background-color: var(--ctp-mantle);
+    box-shadow: 3px 0 5px rgba(0, 0, 0, 0.5);
+  }
+
+  .sidepanel .sidepanel-body,
+  .sidepanel .sidepanel-header {
+    background-color: var(--ctp-base);
+  }
+
+  /* ── Forms ─────────────────────────────────────────────────────────── */
+
+  input,
+  select,
+  textarea {
+    background-color: var(--ctp-surface0);
+    border-color: var(--ctp-surface1);
+    color: var(--ctp-text);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--ctp-overlay0);
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: var(--ctp-accent);
+  }
+
+  .help-block {
+    color: var(--ctp-subtext0);
+  }
+
+  .errorlist li,
+  form .validation-error,
+  form .error .help-inline,
+  div .validation-error,
+  span .validation-error {
+    color: var(--ctp-red);
+  }
+
+  form .error input[type=text],
+  form .error input[type=checkbox],
+  form .error input[type=file],
+  form .error input[type=radio],
+  form .error select,
+  form .error textarea,
+  form :-moz-ui-invalid {
+    border-color: var(--ctp-red);
+    box-shadow: 0 0 2px var(--ctp-red);
+  }
+
+  /* ── Buttons ───────────────────────────────────────────────────────────
+     .btn.primary fills from --btnColor1/2 (now the accent) and its label
+     from --btnTextColor (crust). The plain secondary .btn and the
+     radio-as-button labels hardcode a white->#ddd gradient with #333 text. */
+
+  .btn,
+  .btn:hover,
+  form[hx-target][data-trigger-on-input-change] .radioinput label,
+  #id-heatmap-stat-selector .radioinput label {
+    color: var(--ctp-text);
+    background: linear-gradient(var(--ctp-surface1), var(--ctp-surface0) 200%);
+    border-color: var(--ctp-surface2);
+  }
+
+  .btn.primary,
+  form[hx-target][data-trigger-on-input-change] .radioinput label:hover,
+  form[hx-target][data-trigger-on-input-change] .radioinput input:hover + label,
+  form[hx-target][data-trigger-on-input-change] .radioinput input:checked + label,
+  #id-heatmap-stat-selector .radioinput label:hover,
+  #id-heatmap-stat-selector .radioinput input:hover + label,
+  #id-heatmap-stat-selector .radioinput input:checked + label {
+    color: var(--ctp-crust);
+    background: var(--ctp-accent);
+    border-color: var(--ctp-accent);
+  }
+
+  .btn.primary:hover {
+    background: var(--ctp-lavender);
+    border-color: var(--ctp-lavender);
+  }
+
+  & when (@flatButtons = 1) {
+    .btn,
+    .btn:hover,
+    .btn.primary,
+    .btn.primary:hover,
+    form[hx-target][data-trigger-on-input-change] .radioinput label,
+    #id-heatmap-stat-selector .radioinput label {
+      box-shadow: none;
+    }
+
+    .btn:hover:focus,
+    .btn.primary:focus,
+    .btn.primary:hover:focus {
+      box-shadow: 0 0 3px 3px var(--focusOutlineColor);
+    }
+  }
+
+  /* ── Notices, warnings, comments ────────────────────────────────────── */
+
+  .notice,
+  .clearnotices,
+  ul.messagelist li {
+    color: var(--ctp-text);
+    background-color: color-mix(in srgb, var(--ctp-yellow) 18%, var(--ctp-base));
+    border-bottom-color: var(--ctp-surface1);
+  }
+
+  .close {
+    text-shadow: none;
+    color: var(--ctp-subtext0);
+  }
+
+  .warning {
+    color: var(--ctp-crust);
+    background-color: var(--ctp-peach);
+  }
+
+  .donation-drive.notice {
+    background: var(--ctp-peach);
+    color: var(--ctp-crust);
+  }
+
+  .donation-drive.notice a:link,
+  .donation-drive.notice a:visited {
+    color: var(--ctp-crust);
+    text-decoration: underline;
+  }
+
+  .donation-drive.notice .donation-drive-stats {
+    background-color: color-mix(in srgb, var(--ctp-peach) 70%, var(--ctp-base));
+    border-color: var(--ctp-crust);
+  }
+
+  .donation-drive.notice .donation-drive-stats .chart-container {
+    border-color: var(--ctp-crust);
+  }
+
+  .donation-drive.notice .donation-drive-stats .fraction {
+    background-color: var(--ctp-sky);
+  }
+
+  .comment.selectedcomment {
+    background-color: color-mix(in srgb, var(--ctp-yellow) 20%, transparent);
+  }
+
+  /* ── Stats page: activity heatmap ───────────────────────────────────────
+     cal-heatmap paints SVG rects with hardcoded fills in seven steps of green.
+     Mixed toward the flavor's green so the ramp tracks the live palette. */
+
+  #id-heatmap-wrapper {
+    border-color: var(--ctp-surface1);
+  }
+
+  #id-heatmap-div {
+    background-color: var(--ctp-base);
+  }
+
+  .cal-heatmap-container .graph-rect,
+  .graph-legend .graph-rect,
+  #id-heatmap-div .cal-heatmap-container .q1 {
+    fill: var(--ctp-surface0);
+    background-color: var(--ctp-surface0);
+  }
+
+  #id-heatmap-div .cal-heatmap-container .q2 {
+    fill: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-surface0));
+    background-color: color-mix(in srgb, var(--ctp-green) 30%, var(--ctp-surface0));
+  }
+
+  #id-heatmap-div .cal-heatmap-container .q3 {
+    fill: color-mix(in srgb, var(--ctp-green) 45%, var(--ctp-surface0));
+    background-color: color-mix(in srgb, var(--ctp-green) 45%, var(--ctp-surface0));
+  }
+
+  #id-heatmap-div .cal-heatmap-container .q4 {
+    fill: color-mix(in srgb, var(--ctp-green) 60%, var(--ctp-surface0));
+    background-color: color-mix(in srgb, var(--ctp-green) 60%, var(--ctp-surface0));
+  }
+
+  #id-heatmap-div .cal-heatmap-container .q5 {
+    fill: color-mix(in srgb, var(--ctp-green) 75%, var(--ctp-surface0));
+    background-color: color-mix(in srgb, var(--ctp-green) 75%, var(--ctp-surface0));
+  }
+
+  #id-heatmap-div .cal-heatmap-container .q6 {
+    fill: color-mix(in srgb, var(--ctp-green) 90%, var(--ctp-surface0));
+    background-color: color-mix(in srgb, var(--ctp-green) 90%, var(--ctp-surface0));
+  }
+
+  #id-heatmap-div .cal-heatmap-container .q7 {
+    fill: var(--ctp-green);
+    background-color: var(--ctp-green);
+  }
+
+  .cal-heatmap-container .graph-subdomain-group rect:hover,
+  .graph-legend .graph-subdomain-group rect:hover {
+    stroke: var(--ctp-text);
+  }
+
+  .cal-heatmap-container rect.highlight,
+  .graph-legend rect.highlight,
+  #id-heatmap-div .cal-heatmap-container rect.highlight {
+    stroke: var(--ctp-red);
+  }
+
+  #ch-tooltip {
+    background: var(--ctp-surface1);
+    color: var(--ctp-text);
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  /* ── Stats page: Flot line charts ───────────────────────────────────────
+     The two line charts are Flot. Flot writes its legend background and
+     swatch borders as INLINE styles (white at 85% opacity), so these are the
+     only rules in the file that need !important. The tick labels and lines
+     are canvas-drawn and inherit fine. */
+
+  .legend > div {
+    background-color: var(--ctp-surface0) !important;
+  }
+
+  .legend .legendLabel {
+    color: var(--ctp-text);
+  }
+
+  .legend .legendColorBox > div {
+    border-color: var(--ctp-surface1) !important;
+  }
+
+  /* ── Learn / test page ──────────────────────────────────────────────────
+     The screen you actually spend time on. Everything here is hardcoded
+     grayscale in the site CSS. */
+
+  body.learn-page #id-verse-wrapper {
+    background-color: var(--ctp-mantle);
+  }
+
+  body.learn-page #id-current-verse-wrapper,
+  body.learn-page .previous-verse-wrapper {
+    border-bottom-color: var(--ctp-surface1);
+  }
+
+  body.learn-page .previous-verse-wrapper .previous-verse {
+    color: var(--ctp-overlay1);
+  }
+
+  body.learn-page #id-action-btns {
+    background-color: var(--ctp-base);
+  }
+
+  // Word tiles. Border color is the state signal (correct/incorrect/partial),
+  // so the resting border must be quiet enough for those to pop.
+  body.learn-page .word-button,
+  body.learn-page .hide-word-boundaries .word-button.current {
+    background-image: linear-gradient(var(--ctp-surface1), var(--ctp-surface0));
+    border-color: var(--ctp-surface2);
+    border-top-color: var(--ctp-surface2);
+    border-bottom-color: var(--ctp-surface1);
+    color: var(--ctp-text);
+    text-shadow: none;
+  }
+
+  body.learn-page .word-button.current {
+    border-color: var(--ctp-accent);
+  }
+
+  body.learn-page .word-button.correct {
+    border-color: var(--ctp-green);
+  }
+
+  body.learn-page .word-button.partially-correct {
+    border-color: var(--ctp-yellow);
+  }
+
+  body.learn-page .word-button.incorrect {
+    border-color: var(--ctp-red);
+  }
+
+  // The floating input that sits over the current word while you type.
+  body.learn-page #id-typing {
+    color: var(--ctp-text);
+    background-color: var(--ctp-base);
+    border-color: var(--ctp-accent);
+  }
+
+  body.learn-page #id-typing.incorrect {
+    border-color: var(--ctp-red);
+  }
+
+  // Hidden words are rendered as transparent text with a blurred shadow. The
+  // site's shadow is black, which vanishes on a dark canvas and leaves the
+  // words simply gone rather than blurred. Shadow in the text color instead.
+  body.learn-page .blurry {
+    text-shadow: 0 0 15px var(--ctp-subtext0);
+  }
+
+  body.learn-page #id-help,
+  body.learn-page #id-help h1,
+  body.learn-page #id-help h2,
+  body.learn-page #id-help h3,
+  body.learn-page #id-help h4,
+  body.learn-page #id-loading-full {
+    color: var(--ctp-subtext0);
+  }
+
+  // Session progress bar: gray gradient -> accent.
+  body.learn-page .session-progress .progress-bar {
+    background-color: var(--ctp-surface0);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+  }
+
+  body.learn-page .session-progress .progress-bar > .filled-bar {
+    background: linear-gradient(
+      to bottom,
+      var(--ctp-accent) 0%,
+      color-mix(in srgb, var(--ctp-accent) 70%, var(--ctp-surface0)) 100%
+    );
+  }
+
+  // Points ticker in the navbar. The cyan glow on bonus events is the site's
+  // "you did great" signal; kept, recolored to teal.
+  body.learn-page .latest-points {
+    text-shadow: none;
+  }
+
+  body.learn-page .action-log-item[data-reason="PerfectTestBonus"],
+  body.learn-page .latest-points[data-reason="PerfectTestBonus"],
+  body.learn-page .action-log-item[data-reason="VerseLearnt"],
+  body.learn-page .latest-points[data-reason="VerseLearnt"] {
+    color: var(--ctp-teal);
+    text-shadow: 0 0 6px color-mix(in srgb, var(--ctp-teal) 50%, transparent);
+  }
+
+  body.learn-page #id-verse-options-menu ul {
+    box-shadow: -1px 2px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  @media screen and (max-width: 600px) {
+    body.learn-page nav.topbar .nav-dropdown.menu-open .nav-dropdown-menu {
+      box-shadow: 0 3px 2px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  // Help tour overlay text is white on a black scrim; fine as-is in dark
+  // flavors, but Latte's text token keeps it consistent.
+  body.learn-page #id-help-tour-wrapper {
+    color: var(--ctp-text);
+  }
+
+  body.learn-page #id-help-tour-wrapper #id-help-tour-message,
+  body.learn-page #id-help-tour-wrapper #id-help-tour-controls {
+    background: color-mix(in srgb, var(--ctp-crust) 92%, transparent);
+  }
+}
